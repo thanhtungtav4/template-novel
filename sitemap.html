@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sơ đồ trang web - TruyệnStorm</title>
+    <meta name="description" content="Danh sách tất cả các trang trên website TruyệnStorm - Nền tảng đọc truyện chữ online">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="advanced-styles.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb',
+                        secondary: '#1f2937',
+                        accent: '#f59e0b'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center">
+                        <div class="bg-primary text-white px-3 py-2 rounded-lg font-bold text-lg mr-3">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <span class="text-xl font-bold text-gray-800">TRUYỆN<span class="text-primary">STORM</span></span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="index.html" class="text-primary hover:text-blue-700 transition-colors">
+                        <i class="fas fa-home mr-2"></i>Trang chủ
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            <!-- Page Header -->
+            <div class="text-center mb-12">
+                <h1 class="text-4xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-sitemap text-primary mr-3"></i>
+                    Sơ đồ trang web
+                </h1>
+                <p class="text-xl text-gray-600">Danh sách đầy đủ tất cả các trang trên TruyệnStorm</p>
+                <div class="mt-6 inline-flex items-center bg-blue-50 text-blue-700 px-4 py-2 rounded-lg">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    Tổng cộng: <span class="font-bold ml-1" id="total-pages">12</span> trang
+                </div>
+            </div>
+
+            <!-- Page Categories -->
+            <div class="grid gap-8">
+                <!-- Main Pages -->
+                <section class="bg-white rounded-lg shadow-md p-6 card-enhanced">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-star text-yellow-500 mr-3"></i>
+                        Trang chính
+                    </h2>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <a href="index.html" class="group flex items-center p-4 bg-gray-50 rounded-lg hover:bg-blue-50 hover:text-primary transition-all hover-lift">
+                            <div class="bg-primary text-white p-3 rounded-lg mr-4 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-home text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg">Trang chủ</h3>
+                                <p class="text-gray-600 text-sm">Trang chủ chính của website</p>
+                            </div>
+                        </a>
+
+                        <a href="story-list.html" class="group flex items-center p-4 bg-gray-50 rounded-lg hover:bg-blue-50 hover:text-primary transition-all hover-lift">
+                            <div class="bg-green-500 text-white p-3 rounded-lg mr-4 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-list text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg">Danh sách truyện</h3>
+                                <p class="text-gray-600 text-sm">Xem tất cả truyện có sẵn</p>
+                            </div>
+                        </a>
+
+                        <a href="story-detail.html" class="group flex items-center p-4 bg-gray-50 rounded-lg hover:bg-blue-50 hover:text-primary transition-all hover-lift">
+                            <div class="bg-purple-500 text-white p-3 rounded-lg mr-4 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-book text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg">Chi tiết truyện</h3>
+                                <p class="text-gray-600 text-sm">Thông tin chi tiết về truyện</p>
+                            </div>
+                        </a>
+
+                        <a href="reader.html" class="group flex items-center p-4 bg-gray-50 rounded-lg hover:bg-blue-50 hover:text-primary transition-all hover-lift">
+                            <div class="bg-orange-500 text-white p-3 rounded-lg mr-4 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-book-open text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg">Đọc truyện</h3>
+                                <p class="text-gray-600 text-sm">Giao diện đọc truyện</p>
+                            </div>
+                        </a>
+                    </div>
+                </section>
+
+                <!-- Features Pages -->
+                <section class="bg-white rounded-lg shadow-md p-6 card-enhanced">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-search text-blue-500 mr-3"></i>
+                        Tính năng
+                    </h2>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <a href="search.html" class="group flex items-center p-4 bg-gray-50 rounded-lg hover:bg-blue-50 hover:text-primary transition-all hover-lift">
+                            <div class="bg-blue-500 text-white p-3 rounded-lg mr-4 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-search text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg">Tìm kiếm</h3>
+                                <p class="text-gray-600 text-sm">Tìm kiếm truyện nâng cao</p>
+                            </div>
+                        </a>
+
+                        <a href="genres.html" class="group flex items-center p-4 bg-gray-50 rounded-lg hover:bg-blue-50 hover:text-primary transition-all hover-lift">
+                            <div class="bg-indigo-500 text-white p-3 rounded-lg mr-4 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-tags text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg">Thể loại</h3>
+                                <p class="text-gray-600 text-sm">Duyệt truyện theo thể loại</p>
+                            </div>
+                        </a>
+
+                        <a href="profile.html" class="group flex items-center p-4 bg-gray-50 rounded-lg hover:bg-blue-50 hover:text-primary transition-all hover-lift">
+                            <div class="bg-pink-500 text-white p-3 rounded-lg mr-4 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-user text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg">Hồ sơ cá nhân</h3>
+                                <p class="text-gray-600 text-sm">Thông tin người dùng</p>
+                            </div>
+                        </a>
+                    </div>
+                </section>
+
+                <!-- Information Pages -->
+                <section class="bg-white rounded-lg shadow-md p-6 card-enhanced">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-info-circle text-teal-500 mr-3"></i>
+                        Thông tin
+                    </h2>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <a href="about.html" class="group flex items-center p-4 bg-gray-50 rounded-lg hover:bg-blue-50 hover:text-primary transition-all hover-lift">
+                            <div class="bg-teal-500 text-white p-3 rounded-lg mr-4 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-info-circle text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg">Giới thiệu</h3>
+                                <p class="text-gray-600 text-sm">Về TruyệnStorm</p>
+                            </div>
+                        </a>
+
+                        <a href="contact.html" class="group flex items-center p-4 bg-gray-50 rounded-lg hover:bg-blue-50 hover:text-primary transition-all hover-lift">
+                            <div class="bg-red-500 text-white p-3 rounded-lg mr-4 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-envelope text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg">Liên hệ</h3>
+                                <p class="text-gray-600 text-sm">Thông tin liên hệ</p>
+                            </div>
+                        </a>
+                    </div>
+                </section>
+
+                <!-- Technical Pages -->
+                <section class="bg-white rounded-lg shadow-md p-6 card-enhanced">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-cogs text-gray-600 mr-3"></i>
+                        Kỹ thuật & Quản lý
+                    </h2>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <a href="admin.html" class="group flex items-center p-4 bg-gray-50 rounded-lg hover:bg-blue-50 hover:text-primary transition-all hover-lift">
+                            <div class="bg-red-600 text-white p-3 rounded-lg mr-4 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-shield-alt text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg">Admin Dashboard</h3>
+                                <p class="text-gray-600 text-sm">Bảng điều khiển quản trị</p>
+                            </div>
+                        </a>
+
+                        <div class="group flex items-center p-4 bg-gray-50 rounded-lg">
+                            <div class="bg-gray-600 text-white p-3 rounded-lg mr-4">
+                                <i class="fas fa-code text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg">API Simulator</h3>
+                                <p class="text-gray-600 text-sm">api-simulator.js - Mock API</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Assets & Configuration -->
+                <section class="bg-white rounded-lg shadow-md p-6 card-enhanced">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-file-code text-yellow-600 mr-3"></i>
+                        Tài nguyên & Cấu hình
+                    </h2>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <!-- CSS Files -->
+                        <div class="p-4 bg-blue-50 rounded-lg">
+                            <h3 class="font-semibold text-lg mb-2 text-blue-700">
+                                <i class="fas fa-palette mr-2"></i>CSS Files
+                            </h3>
+                            <ul class="space-y-1 text-sm">
+                                <li class="flex items-center">
+                                    <i class="fas fa-file-code text-blue-500 mr-2"></i>styles.css
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-file-code text-blue-500 mr-2"></i>advanced-styles.css
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- JavaScript Files -->
+                        <div class="p-4 bg-yellow-50 rounded-lg">
+                            <h3 class="font-semibold text-lg mb-2 text-yellow-700">
+                                <i class="fas fa-code mr-2"></i>JavaScript Files
+                            </h3>
+                            <ul class="space-y-1 text-sm">
+                                <li class="flex items-center">
+                                    <i class="fas fa-file-code text-yellow-500 mr-2"></i>script.js
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-file-code text-yellow-500 mr-2"></i>enhanced-script.js
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-file-code text-yellow-500 mr-2"></i>advanced-features.js
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-file-code text-yellow-500 mr-2"></i>api-simulator.js
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- PWA Files -->
+                        <div class="p-4 bg-green-50 rounded-lg">
+                            <h3 class="font-semibold text-lg mb-2 text-green-700">
+                                <i class="fas fa-mobile-alt mr-2"></i>PWA Files
+                            </h3>
+                            <ul class="space-y-1 text-sm">
+                                <li class="flex items-center">
+                                    <i class="fas fa-file-code text-green-500 mr-2"></i>manifest.json
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-file-code text-green-500 mr-2"></i>sw.js
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-file-alt text-green-500 mr-2"></i>README.md
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Statistics -->
+                <section class="bg-gradient-to-r from-primary to-purple-600 text-white rounded-lg shadow-md p-6">
+                    <h2 class="text-2xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-chart-bar mr-3"></i>
+                        Thống kê website
+                    </h2>
+                    <div class="grid md:grid-cols-4 gap-4">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold counter" data-target="12">0</div>
+                            <div class="text-blue-200">Trang HTML</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold counter" data-target="4">0</div>
+                            <div class="text-blue-200">Files JavaScript</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold counter" data-target="2">0</div>
+                            <div class="text-blue-200">Files CSS</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold counter" data-target="7390">0</div>
+                            <div class="text-blue-200">Dòng code</div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Back to Top -->
+            <div class="text-center mt-12">
+                <a href="#top" class="inline-flex items-center bg-primary text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-arrow-up mr-2"></i>
+                    Lên đầu trang
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-secondary text-white mt-16">
+        <div class="container mx-auto px-4 py-8">
+            <div class="text-center">
+                <div class="flex items-center justify-center mb-4">
+                    <div class="bg-primary text-white px-3 py-2 rounded-lg font-bold text-lg mr-3">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <span class="text-2xl font-bold">TRUYỆN<span class="text-primary">STORM</span></span>
+                </div>
+                <p class="text-gray-400">
+                    &copy; 2025 TruyệnStorm. Tất cả quyền được bảo lưu.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="advanced-features.js"></script>
+    <script>
+        // Counter animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const counters = document.querySelectorAll('.counter');
+            
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-target'));
+                const duration = 2000;
+                const increment = target / (duration / 16);
+                let current = 0;
+                
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    
+                    if (target >= 1000) {
+                        counter.textContent = Math.floor(current).toLocaleString();
+                    } else {
+                        counter.textContent = Math.floor(current);
+                    }
+                }, 16);
+            });
+
+            // Smooth scroll
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

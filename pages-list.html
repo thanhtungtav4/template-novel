@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách tất cả trang - TruyệnStorm</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .page-link {
+            transition: all 0.3s ease;
+        }
+        .page-link:hover {
+            transform: translateX(5px);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            <!-- Header -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">
+                    <i class="fas fa-list text-blue-600 mr-3"></i>
+                    Danh sách tất cả trang
+                </h1>
+                <p class="text-gray-600">TruyệnStorm - Nền tảng đọc truyện chữ online</p>
+                <div class="mt-4 inline-flex items-center bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    Tổng: <span class="font-semibold ml-1">12 trang HTML + 6 tài nguyên</span>
+                </div>
+            </div>
+
+            <!-- Main Pages -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-home text-green-600 mr-2"></i>
+                    Trang chính (12 files)
+                </h2>
+                <div class="grid md:grid-cols-2 gap-3">
+                    <a href="index.html" class="page-link flex items-center p-3 bg-gray-50 rounded-lg hover:bg-blue-50 hover:text-blue-700">
+                        <i class="fas fa-home w-6 mr-3 text-blue-600"></i>
+                        <div>
+                            <div class="font-medium">index.html</div>
+                            <div class="text-sm text-gray-500">Trang chủ</div>
+                        </div>
+                    </a>
+
+                    <a href="story-list.html" class="page-link flex items-center p-3 bg-gray-50 rounded-lg hover:bg-blue-50 hover:text-blue-700">
+                        <i class="fas fa-list w-6 mr-3 text-green-600"></i>
+                        <div>
+                            <div class="font-medium">story-list.html</div>
+                            <div class="text-sm text-gray-500">Danh sách truyện</div>
+                        </div>
+                    </a>
+
+                    <a href="story-detail.html" class="page-link flex items-center p-3 bg-gray-50 rounded-lg hover:bg-blue-50 hover:text-blue-700">
+                        <i class="fas fa-book w-6 mr-3 text-purple-600"></i>
+                        <div>
+                            <div class="font-medium">story-detail.html</div>
+                            <div class="text-sm text-gray-500">Chi tiết truyện</div>
+                        </div>
+                    </a>
+
+                    <a href="reader.html" class="page-link flex items-center p-3 bg-gray-50 rounded-lg hover:bg-blue-50 hover:text-blue-700">
+                        <i class="fas fa-book-open w-6 mr-3 text-orange-600"></i>
+                        <div>
+                            <div class="font-medium">reader.html</div>
+                            <div class="text-sm text-gray-500">Đọc truyện</div>
+                        </div>
+                    </a>
+
+                    <a href="search.html" class="page-link flex items-center p-3 bg-gray-50 rounded-lg hover:bg-blue-50 hover:text-blue-700">
+                        <i class="fas fa-search w-6 mr-3 text-blue-600"></i>
+                        <div>
+                            <div class="font-medium">search.html</div>
+                            <div class="text-sm text-gray-500">Tìm kiếm</div>
+                        </div>
+                    </a>
+
+                    <a href="genres.html" class="page-link flex items-center p-3 bg-gray-50 rounded-lg hover:bg-blue-50 hover:text-blue-700">
+                        <i class="fas fa-tags w-6 mr-3 text-indigo-600"></i>
+                        <div>
+                            <div class="font-medium">genres.html</div>
+                            <div class="text-sm text-gray-500">Thể loại</div>
+                        </div>
+                    </a>
+
+                    <a href="profile.html" class="page-link flex items-center p-3 bg-gray-50 rounded-lg hover:bg-blue-50 hover:text-blue-700">
+                        <i class="fas fa-user w-6 mr-3 text-pink-600"></i>
+                        <div>
+                            <div class="font-medium">profile.html</div>
+                            <div class="text-sm text-gray-500">Hồ sơ cá nhân</div>
+                        </div>
+                    </a>
+
+                    <a href="about.html" class="page-link flex items-center p-3 bg-gray-50 rounded-lg hover:bg-blue-50 hover:text-blue-700">
+                        <i class="fas fa-info-circle w-6 mr-3 text-teal-600"></i>
+                        <div>
+                            <div class="font-medium">about.html</div>
+                            <div class="text-sm text-gray-500">Giới thiệu</div>
+                        </div>
+                    </a>
+
+                    <a href="contact.html" class="page-link flex items-center p-3 bg-gray-50 rounded-lg hover:bg-blue-50 hover:text-blue-700">
+                        <i class="fas fa-envelope w-6 mr-3 text-red-600"></i>
+                        <div>
+                            <div class="font-medium">contact.html</div>
+                            <div class="text-sm text-gray-500">Liên hệ</div>
+                        </div>
+                    </a>
+
+                    <a href="admin.html" class="page-link flex items-center p-3 bg-gray-50 rounded-lg hover:bg-blue-50 hover:text-blue-700">
+                        <i class="fas fa-shield-alt w-6 mr-3 text-red-700"></i>
+                        <div>
+                            <div class="font-medium">admin.html</div>
+                            <div class="text-sm text-gray-500">Admin Dashboard</div>
+                        </div>
+                    </a>
+
+                    <a href="sitemap.html" class="page-link flex items-center p-3 bg-gray-50 rounded-lg hover:bg-blue-50 hover:text-blue-700">
+                        <i class="fas fa-sitemap w-6 mr-3 text-gray-600"></i>
+                        <div>
+                            <div class="font-medium">sitemap.html</div>
+                            <div class="text-sm text-gray-500">Sơ đồ trang web</div>
+                        </div>
+                    </a>
+
+                    <div class="page-link flex items-center p-3 bg-blue-50 rounded-lg border-2 border-blue-200">
+                        <i class="fas fa-list-ul w-6 mr-3 text-blue-700"></i>
+                        <div>
+                            <div class="font-medium text-blue-700">pages-list.html</div>
+                            <div class="text-sm text-blue-600">Trang hiện tại</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CSS Files -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-palette text-blue-600 mr-2"></i>
+                    CSS Files (2 files)
+                </h2>
+                <div class="grid md:grid-cols-2 gap-3">
+                    <div class="flex items-center p-3 bg-blue-50 rounded-lg">
+                        <i class="fas fa-file-code w-6 mr-3 text-blue-600"></i>
+                        <div>
+                            <div class="font-medium">styles.css</div>
+                            <div class="text-sm text-gray-500">CSS cơ bản</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center p-3 bg-blue-50 rounded-lg">
+                        <i class="fas fa-file-code w-6 mr-3 text-blue-600"></i>
+                        <div>
+                            <div class="font-medium">advanced-styles.css</div>
+                            <div class="text-sm text-gray-500">CSS nâng cao</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- JavaScript Files -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-code text-yellow-600 mr-2"></i>
+                    JavaScript Files (4 files)
+                </h2>
+                <div class="grid md:grid-cols-2 gap-3">
+                    <div class="flex items-center p-3 bg-yellow-50 rounded-lg">
+                        <i class="fas fa-file-code w-6 mr-3 text-yellow-600"></i>
+                        <div>
+                            <div class="font-medium">script.js</div>
+                            <div class="text-sm text-gray-500">JavaScript cơ bản</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center p-3 bg-yellow-50 rounded-lg">
+                        <i class="fas fa-file-code w-6 mr-3 text-yellow-600"></i>
+                        <div>
+                            <div class="font-medium">enhanced-script.js</div>
+                            <div class="text-sm text-gray-500">JavaScript cải tiến</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center p-3 bg-yellow-50 rounded-lg">
+                        <i class="fas fa-file-code w-6 mr-3 text-yellow-600"></i>
+                        <div>
+                            <div class="font-medium">advanced-features.js</div>
+                            <div class="text-sm text-gray-500">Tính năng nâng cao</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center p-3 bg-yellow-50 rounded-lg">
+                        <i class="fas fa-file-code w-6 mr-3 text-yellow-600"></i>
+                        <div>
+                            <div class="font-medium">api-simulator.js</div>
+                            <div class="text-sm text-gray-500">Mock API</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Configuration Files -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-cogs text-green-600 mr-2"></i>
+                    Configuration Files (3 files)
+                </h2>
+                <div class="grid md:grid-cols-3 gap-3">
+                    <div class="flex items-center p-3 bg-green-50 rounded-lg">
+                        <i class="fas fa-file-alt w-6 mr-3 text-green-600"></i>
+                        <div>
+                            <div class="font-medium">manifest.json</div>
+                            <div class="text-sm text-gray-500">PWA Manifest</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center p-3 bg-green-50 rounded-lg">
+                        <i class="fas fa-file-code w-6 mr-3 text-green-600"></i>
+                        <div>
+                            <div class="font-medium">sw.js</div>
+                            <div class="text-sm text-gray-500">Service Worker</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center p-3 bg-green-50 rounded-lg">
+                        <i class="fas fa-file-alt w-6 mr-3 text-green-600"></i>
+                        <div>
+                            <div class="font-medium">README.md</div>
+                            <div class="text-sm text-gray-500">Tài liệu</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold mb-4 flex items-center">
+                    <i class="fas fa-chart-pie mr-2"></i>
+                    Tổng kết
+                </h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                    <div>
+                        <div class="text-2xl font-bold">12</div>
+                        <div class="text-blue-200">Trang HTML</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold">4</div>
+                        <div class="text-blue-200">Files JS</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold">2</div>
+                        <div class="text-blue-200">Files CSS</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold">3</div>
+                        <div class="text-blue-200">Config Files</div>
+                    </div>
+                </div>
+                <div class="mt-4 text-center">
+                    <div class="text-3xl font-bold">21</div>
+                    <div class="text-blue-200">Tổng số files</div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="text-center mt-8">
+                <a href="index.html" class="inline-flex items-center bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors mr-4">
+                    <i class="fas fa-home mr-2"></i>
+                    Về trang chủ
+                </a>
+                <a href="sitemap.html" class="inline-flex items-center bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors">
+                    <i class="fas fa-sitemap mr-2"></i>
+                    Xem sơ đồ chi tiết
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
