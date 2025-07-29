@@ -358,248 +358,364 @@
             </div>
             
             <!-- Featured Grid -->
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 sm:gap-6 featured-grid">
-                <article class="group story-card hover-lift animate-on-scroll">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
+                <article class="group story-card animate-on-scroll">
                     <a href="story-detail.html" class="block">
-                        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 card-enhanced">
-                            <div class="relative">
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 h-80 flex flex-col border border-gray-100 hover:border-primary/20">
+                            <div class="relative flex-shrink-0 overflow-hidden">
                                 <img data-src="https://picsum.photos/200/280?random=story1" alt="Bìa truyện Ngạo Thế Cửu Trọng Thiên"
-                                      class="w-full h-32 sm:h-40 lg:h-48 object-cover group-hover:scale-105 transition-transform duration-300 skeleton"
+                                      class="w-full h-32 sm:h-40 lg:h-48 object-cover group-hover:scale-110 transition-transform duration-500"
                                      loading="lazy">
-                                <div class="absolute top-2 left-2">
-                                    <span class="badge-hot bg-red-500 text-white text-xs px-2 py-1 rounded-full">Hot</span>
+                                <!-- Gradient overlay for better text readability -->
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                
+                                <div class="absolute top-3 left-3">
+                                    <span class="bg-red-500 text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg animate-pulse">Hot</span>
                                 </div>
-                                <div class="absolute top-2 right-2">
-                                    <span class="bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">Full</span>
+                                <div class="absolute top-3 right-3">
+                                    <span class="bg-black/70 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full font-medium">Full</span>
                                 </div>
-                                <!-- Reading Progress Bar -->
+                                
+                                <!-- Enhanced Reading Progress Bar -->
                                 <div class="absolute bottom-0 left-0 w-full">
-                                    <div class="bg-gray-200 h-1">
-                                        <div class="bg-primary h-1 reading-progress transition-all duration-300" style="width: 75%"></div>
+                                    <div class="bg-white/30 h-1">
+                                        <div class="bg-gradient-to-r from-primary to-blue-400 h-1 transition-all duration-300" style="width: 75%"></div>
                                     </div>
+                                </div>
+                                
+                                <!-- Bookmark icon -->
+                                <div class="absolute top-3 right-12 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    <button class="text-white hover:text-yellow-300 transition-colors p-1">
+                                        <i class="far fa-bookmark text-sm"></i>
+                                    </button>
                                 </div>
                             </div>
-                            <div class="p-3 sm:p-4">
-                                <h3 class="font-semibold text-gray-800 text-sm sm:text-base line-clamp-2 group-hover:text-primary transition-colors mb-2">
-                                    Ngạo Thế Cửu Trọng Thiên
-                                </h3>
-                                <p class="text-xs sm:text-sm text-gray-500 mb-2">Tiên Hiệp</p>
-                                <div class="flex items-center justify-between text-xs text-gray-400">
-                                    <span>Chương 1250</span>
-                                    <span>2 giờ trước</span>
+                            
+                            <div class="p-4 flex-1 flex flex-col justify-between">
+                                <div>
+                                    <h3 class="font-bold text-gray-800 text-sm sm:text-base line-clamp-2 group-hover:text-primary transition-colors mb-2 leading-tight">
+                                        Ngạo Thế Cửu Trọng Thiên
+                                    </h3>
+                                    <p class="text-xs sm:text-sm text-primary/70 font-medium mb-3">Tiên Hiệp</p>
+                                    <div class="flex items-center justify-between text-xs text-gray-500 mb-2">
+                                        <span class="flex items-center">
+                                            <i class="fas fa-book-open mr-1 text-primary/60"></i>
+                                            Ch.1250
+                                        </span>
+                                        <span class="flex items-center">
+                                            <i class="fas fa-clock mr-1 text-gray-400"></i>
+                                            2h trước
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="flex items-center mt-2">
-                                    <div class="flex text-yellow-400 text-xs">
+                                
+                                <div class="flex items-center justify-between mt-auto pt-2 border-t border-gray-100">
+                                    <div class="flex text-yellow-400 text-sm">
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star"></i>
                                     </div>
-                                    <span class="text-xs text-gray-400 ml-1">9.8</span>
+                                    <span class="text-sm font-bold text-gray-700">9.8</span>
                                 </div>
                             </div>
                         </div>
                     </a>
                 </article>
 
-                <article class="group story-card">
+                <article class="group story-card animate-on-scroll">
                     <a href="story-detail.html" class="block">
-                        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                            <div class="relative">
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 h-80 flex flex-col border border-gray-100 hover:border-primary/20">
+                            <div class="relative flex-shrink-0 overflow-hidden">
                                 <img src="https://picsum.photos/200/280?random=story2" alt="Bìa truyện Đấu Phá Thương Khung"
-                                      class="w-full h-32 sm:h-40 lg:h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                                      class="w-full h-32 sm:h-40 lg:h-48 object-cover group-hover:scale-110 transition-transform duration-500"
                                      loading="lazy">
-                                <div class="absolute top-2 left-2">
-                                    <span class="bg-green-500 text-white text-xs px-2 py-1 rounded-full">New</span>
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                
+                                <div class="absolute top-3 left-3">
+                                    <span class="bg-green-500 text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">New</span>
                                 </div>
+                                
                                 <div class="absolute bottom-0 left-0 w-full">
-                                    <div class="bg-gray-200 h-1">
-                                        <div class="bg-primary h-1 reading-progress transition-all duration-300" style="width: 42%"></div>
+                                    <div class="bg-white/30 h-1">
+                                        <div class="bg-gradient-to-r from-green-500 to-green-400 h-1 transition-all duration-300" style="width: 42%"></div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="p-3 sm:p-4">
-                                <h3 class="font-semibold text-gray-800 text-sm sm:text-base line-clamp-2 group-hover:text-primary transition-colors mb-2">
-                                    Đấu Phá Thương Khung
-                                </h3>
-                                <p class="text-xs sm:text-sm text-gray-500 mb-2">Tiên Hiệp</p>
-                                <div class="flex items-center justify-between text-xs text-gray-400">
-                                    <span>Chương 1683</span>
-                                    <span>4 giờ trước</span>
+                                
+                                <div class="absolute top-3 right-12 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    <button class="text-white hover:text-yellow-300 transition-colors p-1">
+                                        <i class="far fa-bookmark text-sm"></i>
+                                    </button>
                                 </div>
-                                <div class="flex items-center mt-2">
-                                    <div class="flex text-yellow-400 text-xs">
+                            </div>
+                            
+                            <div class="p-4 flex-1 flex flex-col justify-between">
+                                <div>
+                                    <h3 class="font-bold text-gray-800 text-sm sm:text-base line-clamp-2 group-hover:text-primary transition-colors mb-2 leading-tight">
+                                        Đấu Phá Thương Khung
+                                    </h3>
+                                    <p class="text-xs sm:text-sm text-primary/70 font-medium mb-3">Tiên Hiệp</p>
+                                    <div class="flex items-center justify-between text-xs text-gray-500 mb-2">
+                                        <span class="flex items-center">
+                                            <i class="fas fa-book-open mr-1 text-primary/60"></i>
+                                            Ch.1683
+                                        </span>
+                                        <span class="flex items-center">
+                                            <i class="fas fa-clock mr-1 text-gray-400"></i>
+                                            4h trước
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center justify-between mt-auto pt-2 border-t border-gray-100">
+                                    <div class="flex text-yellow-400 text-sm">
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star-half-alt"></i>
                                     </div>
-                                    <span class="text-xs text-gray-400 ml-1">9.2</span>
+                                    <span class="text-sm font-bold text-gray-700">9.2</span>
                                 </div>
                             </div>
                         </div>
                     </a>
                 </article>
 
-                <article class="group story-card">
+                <article class="group story-card animate-on-scroll">
                     <a href="story-detail.html" class="block">
-                        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                            <div class="relative">
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 h-80 flex flex-col border border-gray-100 hover:border-primary/20">
+                            <div class="relative flex-shrink-0 overflow-hidden">
                                 <img src="https://picsum.photos/200/280?random=story3" alt="Bìa truyện Võ Luyện Đỉnh Phong"
-                                      class="w-full h-32 sm:h-40 lg:h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                                      class="w-full h-32 sm:h-40 lg:h-48 object-cover group-hover:scale-110 transition-transform duration-500"
                                      loading="lazy">
-                                <div class="absolute top-2 left-2">
-                                    <span class="bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">Update</span>
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                
+                                <div class="absolute top-3 left-3">
+                                    <span class="bg-yellow-500 text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">Update</span>
                                 </div>
+                                
                                 <div class="absolute bottom-0 left-0 w-full">
-                                    <div class="bg-gray-200 h-1">
-                                        <div class="bg-primary h-1 reading-progress transition-all duration-300" style="width: 88%"></div>
+                                    <div class="bg-white/30 h-1">
+                                        <div class="bg-gradient-to-r from-yellow-500 to-orange-400 h-1 transition-all duration-300" style="width: 88%"></div>
                                     </div>
+                                </div>
+                                
+                                <div class="absolute top-3 right-12 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    <button class="text-white hover:text-yellow-300 transition-colors p-1">
+                                        <i class="far fa-bookmark text-sm"></i>
+                                    </button>
                                 </div>
                             </div>
-                            <div class="p-3 sm:p-4">
-                                <h3 class="font-semibold text-gray-800 text-sm sm:text-base line-clamp-2 group-hover:text-primary transition-colors mb-2">
-                                    Võ Luyện Đỉnh Phong
-                                </h3>
-                                <p class="text-xs sm:text-sm text-gray-500 mb-2">Tiên Hiệp</p>
-                                <div class="flex items-center justify-between text-xs text-gray-400">
-                                    <span>Chương 5892</span>
-                                    <span>6 giờ trước</span>
+                            
+                            <div class="p-4 flex-1 flex flex-col justify-between">
+                                <div>
+                                    <h3 class="font-bold text-gray-800 text-sm sm:text-base line-clamp-2 group-hover:text-primary transition-colors mb-2 leading-tight">
+                                        Võ Luyện Đỉnh Phong
+                                    </h3>
+                                    <p class="text-xs sm:text-sm text-primary/70 font-medium mb-3">Tiên Hiệp</p>
+                                    <div class="flex items-center justify-between text-xs text-gray-500 mb-2">
+                                        <span class="flex items-center">
+                                            <i class="fas fa-book-open mr-1 text-primary/60"></i>
+                                            Ch.5892
+                                        </span>
+                                        <span class="flex items-center">
+                                            <i class="fas fa-clock mr-1 text-gray-400"></i>
+                                            6h trước
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="flex items-center mt-2">
-                                    <div class="flex text-yellow-400 text-xs">
+                                
+                                <div class="flex items-center justify-between mt-auto pt-2 border-t border-gray-100">
+                                    <div class="flex text-yellow-400 text-sm">
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star"></i>
                                     </div>
-                                    <span class="text-xs text-gray-400 ml-1">9.6</span>
+                                    <span class="text-sm font-bold text-gray-700">9.6</span>
                                 </div>
                             </div>
                         </div>
                     </a>
                 </article>
 
-                <article class="group story-card">
+                <article class="group story-card animate-on-scroll">
                     <a href="story-detail.html" class="block">
-                        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                            <div class="relative">
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 h-80 flex flex-col border border-gray-100 hover:border-primary/20">
+                            <div class="relative flex-shrink-0 overflow-hidden">
                                 <img src="https://picsum.photos/200/280?random=story4" alt="Bìa truyện Thần Mộ"
-                                      class="w-full h-32 sm:h-40 lg:h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                                      class="w-full h-32 sm:h-40 lg:h-48 object-cover group-hover:scale-110 transition-transform duration-500"
                                      loading="lazy">
-                                <div class="absolute top-2 right-2">
-                                    <span class="bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">Full</span>
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                
+                                <div class="absolute top-3 right-3">
+                                    <span class="bg-black/70 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full font-medium">Full</span>
                                 </div>
+                                
                                 <div class="absolute bottom-0 left-0 w-full">
-                                    <div class="bg-gray-200 h-1">
-                                        <div class="bg-green-500 h-1 reading-progress transition-all duration-300" style="width: 100%"></div>
+                                    <div class="bg-white/30 h-1">
+                                        <div class="bg-gradient-to-r from-green-500 to-emerald-400 h-1 transition-all duration-300" style="width: 100%"></div>
                                     </div>
+                                </div>
+                                
+                                <div class="absolute top-3 right-12 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    <button class="text-white hover:text-yellow-300 transition-colors p-1">
+                                        <i class="far fa-bookmark text-sm"></i>
+                                    </button>
                                 </div>
                             </div>
-                            <div class="p-3 sm:p-4">
-                                <h3 class="font-semibold text-gray-800 text-sm sm:text-base line-clamp-2 group-hover:text-primary transition-colors mb-2">
-                                    Thần Mộ
-                                </h3>
-                                <p class="text-xs sm:text-sm text-gray-500 mb-2">Kiếm Hiệp</p>
-                                <div class="flex items-center justify-between text-xs text-gray-400">
-                                    <span>Chương 756</span>
-                                    <span>1 ngày trước</span>
+                            
+                            <div class="p-4 flex-1 flex flex-col justify-between">
+                                <div>
+                                    <h3 class="font-bold text-gray-800 text-sm sm:text-base line-clamp-2 group-hover:text-primary transition-colors mb-2 leading-tight">
+                                        Thần Mộ
+                                    </h3>
+                                    <p class="text-xs sm:text-sm text-primary/70 font-medium mb-3">Kiếm Hiệp</p>
+                                    <div class="flex items-center justify-between text-xs text-gray-500 mb-2">
+                                        <span class="flex items-center">
+                                            <i class="fas fa-book-open mr-1 text-primary/60"></i>
+                                            Ch.756
+                                        </span>
+                                        <span class="flex items-center">
+                                            <i class="fas fa-clock mr-1 text-gray-400"></i>
+                                            1 ngày
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="flex items-center mt-2">
-                                    <div class="flex text-yellow-400 text-xs">
+                                
+                                <div class="flex items-center justify-between mt-auto pt-2 border-t border-gray-100">
+                                    <div class="flex text-yellow-400 text-sm">
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star"></i>
                                     </div>
-                                    <span class="text-xs text-gray-400 ml-1">9.4</span>
+                                    <span class="text-sm font-bold text-gray-700">9.4</span>
                                 </div>
                             </div>
                         </div>
                     </a>
                 </article>
 
-                <article class="group story-card">
+                <article class="group story-card animate-on-scroll">
                     <a href="story-detail.html" class="block">
-                        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                            <div class="relative">
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 h-80 flex flex-col border border-gray-100 hover:border-primary/20">
+                            <div class="relative flex-shrink-0 overflow-hidden">
                                 <img src="https://picsum.photos/200/280?random=story5" alt="Bìa truyện Hoàn Mỹ Thế Giới"
-                                      class="w-full h-32 sm:h-40 lg:h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                                      class="w-full h-32 sm:h-40 lg:h-48 object-cover group-hover:scale-110 transition-transform duration-500"
                                      loading="lazy">
-                                <div class="absolute top-2 left-2">
-                                    <span class="bg-pink-500 text-white text-xs px-2 py-1 rounded-full">Romance</span>
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                
+                                <div class="absolute top-3 left-3">
+                                    <span class="bg-pink-500 text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">Romance</span>
                                 </div>
+                                
                                 <div class="absolute bottom-0 left-0 w-full">
-                                    <div class="bg-gray-200 h-1">
-                                        <div class="bg-primary h-1 reading-progress transition-all duration-300" style="width: 63%"></div>
+                                    <div class="bg-white/30 h-1">
+                                        <div class="bg-gradient-to-r from-pink-500 to-rose-400 h-1 transition-all duration-300" style="width: 63%"></div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="p-3 sm:p-4">
-                                <h3 class="font-semibold text-gray-800 text-sm sm:text-base line-clamp-2 group-hover:text-primary transition-colors mb-2">
-                                    Hoàn Mỹ Thế Giới
-                                </h3>
-                                <p class="text-xs sm:text-sm text-gray-500 mb-2">Ngôn Tình</p>
-                                <div class="flex items-center justify-between text-xs text-gray-400">
-                                    <span>Chương 1205</span>
-                                    <span>8 giờ trước</span>
+                                
+                                <div class="absolute top-3 right-12 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    <button class="text-white hover:text-yellow-300 transition-colors p-1">
+                                        <i class="far fa-bookmark text-sm"></i>
+                                    </button>
                                 </div>
-                                <div class="flex items-center mt-2">
-                                    <div class="flex text-yellow-400 text-xs">
+                            </div>
+                            
+                            <div class="p-4 flex-1 flex flex-col justify-between">
+                                <div>
+                                    <h3 class="font-bold text-gray-800 text-sm sm:text-base line-clamp-2 group-hover:text-primary transition-colors mb-2 leading-tight">
+                                        Hoàn Mỹ Thế Giới
+                                    </h3>
+                                    <p class="text-xs sm:text-sm text-primary/70 font-medium mb-3">Ngôn Tình</p>
+                                    <div class="flex items-center justify-between text-xs text-gray-500 mb-2">
+                                        <span class="flex items-center">
+                                            <i class="fas fa-book-open mr-1 text-primary/60"></i>
+                                            Ch.1205
+                                        </span>
+                                        <span class="flex items-center">
+                                            <i class="fas fa-clock mr-1 text-gray-400"></i>
+                                            8h trước
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center justify-between mt-auto pt-2 border-t border-gray-100">
+                                    <div class="flex text-yellow-400 text-sm">
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star-half-alt"></i>
                                     </div>
-                                    <span class="text-xs text-gray-400 ml-1">9.1</span>
+                                    <span class="text-sm font-bold text-gray-700">9.1</span>
                                 </div>
                             </div>
                         </div>
                     </a>
                 </article>
 
-                <article class="group story-card">
+                <article class="group story-card animate-on-scroll">
                     <a href="story-detail.html" class="block">
-                        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                            <div class="relative">
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 h-80 flex flex-col border border-gray-100 hover:border-primary/20">
+                            <div class="relative flex-shrink-0 overflow-hidden">
                                 <img src="https://picsum.photos/200/280?random=story6" alt="Bìa truyện Thiên Long Bát Bộ"
-                                      class="w-full h-32 sm:h-40 lg:h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                                      class="w-full h-32 sm:h-40 lg:h-48 object-cover group-hover:scale-110 transition-transform duration-500"
                                      loading="lazy">
-                                <div class="absolute top-2 left-2">
-                                    <span class="bg-purple-500 text-white text-xs px-2 py-1 rounded-full">Classic</span>
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                
+                                <div class="absolute top-3 left-3">
+                                    <span class="bg-purple-500 text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">Classic</span>
                                 </div>
-                                <div class="absolute top-2 right-2">
-                                    <span class="bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">Full</span>
+                                <div class="absolute top-3 right-3">
+                                    <span class="bg-black/70 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full font-medium">Full</span>
                                 </div>
+                                
                                 <div class="absolute bottom-0 left-0 w-full">
-                                    <div class="bg-gray-200 h-1">
-                                        <div class="bg-green-500 h-1 reading-progress transition-all duration-300" style="width: 100%"></div>
+                                    <div class="bg-white/30 h-1">
+                                        <div class="bg-gradient-to-r from-purple-500 to-indigo-400 h-1 transition-all duration-300" style="width: 100%"></div>
                                     </div>
+                                </div>
+                                
+                                <div class="absolute top-3 right-12 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    <button class="text-white hover:text-yellow-300 transition-colors p-1">
+                                        <i class="fas fa-bookmark text-sm"></i>
+                                    </button>
                                 </div>
                             </div>
-                            <div class="p-3 sm:p-4">
-                                <h3 class="font-semibold text-gray-800 text-sm sm:text-base line-clamp-2 group-hover:text-primary transition-colors mb-2">
-                                    Thiên Long Bát Bộ
-                                </h3>
-                                <p class="text-xs sm:text-sm text-gray-500 mb-2">Kiếm Hiệp</p>
-                                <div class="flex items-center justify-between text-xs text-gray-400">
-                                    <span>Chương 50</span>
-                                    <span>Hoàn thành</span>
+                            
+                            <div class="p-4 flex-1 flex flex-col justify-between">
+                                <div>
+                                    <h3 class="font-bold text-gray-800 text-sm sm:text-base line-clamp-2 group-hover:text-primary transition-colors mb-2 leading-tight">
+                                        Thiên Long Bát Bộ
+                                    </h3>
+                                    <p class="text-xs sm:text-sm text-primary/70 font-medium mb-3">Kiếm Hiệp</p>
+                                    <div class="flex items-center justify-between text-xs text-gray-500 mb-2">
+                                        <span class="flex items-center">
+                                            <i class="fas fa-book-open mr-1 text-primary/60"></i>
+                                            Ch.50
+                                        </span>
+                                        <span class="flex items-center">
+                                            <i class="fas fa-check-circle mr-1 text-green-500"></i>
+                                            Hoàn thành
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="flex items-center mt-2">
-                                    <div class="flex text-yellow-400 text-xs">
+                                
+                                <div class="flex items-center justify-between mt-auto pt-2 border-t border-gray-100">
+                                    <div class="flex text-yellow-400 text-sm">
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star"></i>
                                     </div>
-                                    <span class="text-xs text-gray-400 ml-1">10.0</span>
+                                    <span class="text-sm font-bold text-gray-700">10.0</span>
                                 </div>
                             </div>
                         </div>
