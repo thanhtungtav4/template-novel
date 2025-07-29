@@ -1,0 +1,713 @@
+/* Custom styles for TruyệnStorm - Vietnamese Story Reading Platform */
+
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --secondary: #1f2937;
+    --accent: #f59e0b;
+    --accent-dark: #d97706;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-600: #4b5563;
+    --gray-800: #1f2937;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+}
+
+/* Enhanced Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+@keyframes bounce {
+    0%, 20%, 53%, 80%, 100% {
+        transform: translate3d(0,0,0);
+    }
+    40%, 43% {
+        transform: translate3d(0, -30px, 0);
+    }
+    70% {
+        transform: translate3d(0, -15px, 0);
+    }
+    90% {
+        transform: translate3d(0, -4px, 0);
+    }
+}
+
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(37, 99, 235, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(37, 99, 235, 0.6);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.animate-slide-in {
+    animation: slideIn 0.6s ease-out;
+}
+
+.animate-pulse {
+    animation: pulse 2s infinite;
+}
+
+.animate-bounce {
+    animation: bounce 2s infinite;
+}
+
+.animate-glow {
+    animation: glow 2s ease-in-out infinite;
+}
+
+/* Enhanced Hero Section */
+.hero-bg-decoration {
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(120, 200, 255, 0.3) 0%, transparent 50%);
+}
+
+/* Trending Keywords Animation */
+.trending-keyword {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+}
+
+/* Story Card Enhancements */
+.story-card:hover .reading-progress {
+    height: 3px;
+    transition: height 0.3s ease;
+}
+
+.story-card .reading-progress {
+    height: 1px;
+    transition: height 0.3s ease;
+}
+
+/* Badge Animations */
+.badge-hot {
+    animation: pulse 2s infinite;
+}
+
+/* Backdrop Blur Effect */
+.backdrop-blur-sm {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+/* Trending Section Styles */
+.trending-rank {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+    font-weight: bold;
+    min-width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    box-shadow: 0 2px 8px rgba(238, 90, 36, 0.3);
+}
+
+.trending-rank.rank-1 {
+    background: linear-gradient(135deg, #ffd700, #ffb700);
+}
+
+.trending-rank.rank-2 {
+    background: linear-gradient(135deg, #c0c0c0, #999999);
+}
+
+.trending-rank.rank-3 {
+    background: linear-gradient(135deg, #cd7f32, #a0522d);
+}
+
+/* Enhanced View Count Animation */
+.view-count {
+    font-weight: 600;
+    color: #ef4444;
+}
+
+/* Star Rating Enhancement */
+.star-rating {
+    filter: drop-shadow(0 1px 2px rgba(251, 191, 36, 0.3));
+}
+
+/* Gradient Text Effects */
+.gradient-text {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Enhanced Buttons */
+.btn-enhanced {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.btn-enhanced::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-enhanced:hover::before {
+    left: 100%;
+}
+
+/* Mobile Enhancements */
+@media (max-width: 768px) {
+    .animate-fade-in-up {
+        animation-duration: 0.6s;
+    }
+    
+    .hero-bg-decoration {
+        background-size: 100% 100%;
+    }
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Typography */
+body {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+}
+
+/* Hide scrollbars for horizontal scroll areas */
+.scrollbar-hide {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+/* Text line clamping */
+.line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+}
+
+.line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+}
+
+/* Touch feedback for mobile */
+.touch-active {
+    background-color: rgba(37, 99, 235, 0.05);
+    transform: scale(0.98);
+}
+
+/* Story card hover effects */
+.story-card {
+    transition: all 0.3s ease;
+}
+
+.story-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Button styles */
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+    border: 2px solid var(--primary);
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--primary);
+    border: 2px solid var(--primary);
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background-color: var(--primary);
+    color: white;
+}
+
+/* Enhanced animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInFromTop {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Fade in animation for cards */
+.fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Header transition for mobile scroll */
+header {
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Enhanced hover effects */
+.manga-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.manga-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Mobile-specific hover states */
+@media (hover: none) and (pointer: coarse) {
+    .manga-card:hover {
+        transform: none;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    .manga-card:active {
+        transform: scale(0.98);
+    }
+}
+
+/* Custom gradient backgrounds */
+.gradient-bg-1 {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.gradient-bg-2 {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.gradient-bg-3 {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+/* Custom scrollbar for desktop */
+@media (min-width: 768px) {
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #ef4444;
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #dc2626;
+    }
+}
+
+/* Loading spinner */
+.spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #ef4444;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive image overlay */
+.image-overlay {
+    position: relative;
+    overflow: hidden;
+}
+
+.image-overlay::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.7) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+}
+
+.image-overlay:hover::before {
+    opacity: 1;
+}
+
+/* Star rating animation */
+.star-rating {
+    display: inline-flex;
+}
+
+.star-rating i {
+    transition: color 0.2s ease;
+}
+
+.star-rating:hover i {
+    color: #fbbf24;
+}
+
+/* Enhanced button effects */
+.btn-primary {
+    background: linear-gradient(45deg, #ef4444, #dc2626);
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(45deg, #dc2626, #b91c1c);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+}
+
+/* Mobile responsiveness enhancements */
+@media (max-width: 640px) {
+    /* Smaller spacing for mobile */
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    /* Adjust font sizes */
+    .hero-title {
+        font-size: 1.25rem;
+    }
+    
+    /* Stack elements vertically on mobile */
+    .mobile-stack {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    /* Ensure touch targets are at least 44px */
+    button, a, input[type="button"], input[type="submit"] {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* Reduce padding for mobile cards */
+    .manga-card {
+        padding: 0.75rem;
+    }
+    
+    /* Mobile navigation adjustments */
+    .mobile-nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 50;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Extra small screens */
+    .text-responsive {
+        font-size: 0.75rem;
+    }
+    
+    /* Reduce image sizes */
+    .hero-image {
+        width: 120px;
+        height: 150px;
+    }
+    
+    /* Smaller gaps */
+    .mobile-gap {
+        gap: 0.25rem;
+    }
+}
+
+/* Tablet optimizations */
+@media (min-width: 641px) and (max-width: 1024px) {
+    .manga-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+    }
+    
+    /* Adjust spacing for tablets */
+    .tablet-spacing {
+        padding: 1.5rem;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .dark-mode {
+        background-color: #1f2937;
+        color: #f9fafb;
+    }
+    
+    .dark-mode .bg-white {
+        background-color: #374151;
+    }
+    
+    .dark-mode .text-gray-800 {
+        color: #f9fafb;
+    }
+    
+    .dark-mode .text-gray-600 {
+        color: #d1d5db;
+    }
+    
+    .dark-mode .border-gray-200 {
+        border-color: #4b5563;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .high-contrast {
+        filter: contrast(150%);
+    }
+    
+    .high-contrast .text-gray-500 {
+        color: #000000;
+    }
+    
+    .high-contrast .text-gray-400 {
+        color: #333333;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .fade-in-up {
+        animation: none;
+    }
+    
+    .manga-card {
+        transition: none;
+    }
+}
+
+/* Print styles */
+@media print {
+    .no-print, header, footer, .mobile-menu, .advertisement {
+        display: none !important;
+    }
+    
+    body {
+        background: white !important;
+        color: black !important;
+        font-size: 12pt;
+    }
+    
+    .manga-card {
+        break-inside: avoid;
+        border: 1px solid #ccc;
+        margin-bottom: 1rem;
+    }
+}
+
+/* Focus styles for accessibility */
+button:focus,
+a:focus,
+input:focus {
+    outline: 2px solid #ef4444;
+    outline-offset: 2px;
+}
+
+/* Skip link for accessibility */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: #ef4444;
+    color: white;
+    padding: 8px;
+    text-decoration: none;
+    border-radius: 4px;
+    z-index: 1000;
+}
+
+.skip-link:focus {
+    top: 6px;
+}
+
+/* Enhanced loading states */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Custom checkbox styles */
+.custom-checkbox {
+    appearance: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid #ef4444;
+    border-radius: 0.25rem;
+    position: relative;
+    cursor: pointer;
+}
+
+.custom-checkbox:checked {
+    background-color: #ef4444;
+}
+
+.custom-checkbox:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 0.875rem;
+}
+
+/* Enhanced tooltip styles */
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #1f2937;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 0.875rem;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Notification system */
+.notification {
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+/* Performance optimizations */
+.will-change-transform {
+    will-change: transform;
+}
+
+.gpu-accelerated {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
