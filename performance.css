@@ -1,0 +1,99 @@
+/* Performance Optimizations CSS */
+
+/* Critical CSS - Above the fold */
+.critical {
+    display: block;
+    visibility: visible;
+}
+
+/* Preload important fonts */
+@font-face {
+    font-family: 'Inter';
+    font-display: swap;
+    src: url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+}
+
+/* Optimize images */
+img {
+    image-rendering: auto;
+    image-rendering: crisp-edges;
+    image-rendering: -webkit-optimize-contrast;
+}
+
+/* Reduce paint and layout thrashing */
+.optimized-transform {
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+.optimized-opacity {
+    will-change: opacity;
+}
+
+/* Efficient animations */
+@keyframes fadeInOptimized {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 20px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.fade-in-optimized {
+    animation: fadeInOptimized 0.3s ease-out;
+}
+
+/* Memory efficient scroll */
+.smooth-scroll {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Reduce repaints */
+.gpu-accelerated {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+}
+
+/* Lazy loading placeholders */
+.lazy-placeholder {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    .mobile-optimized {
+        contain: layout style paint;
+    }
+    
+    /* Reduce complexity on mobile */
+    .complex-animation {
+        animation: none;
+    }
+    
+    .mobile-hidden {
+        display: none;
+    }
+}
+
+/* Print optimizations */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    .print-optimized {
+        color: #000 !important;
+        background: #fff !important;
+    }
+}
