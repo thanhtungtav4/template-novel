@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="vi" itemscope itemtype="https://schema.org/WebSite">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TruyệnStorm - Đọc Truyện Chữ Online Miễn Phí | Kho Truyện Hay Nhất</title>
+    <meta name="description" content="Đọc truyện chữ online miễn phí tại TruyệnStorm. Kho truyện lớn với hàng nghìn bộ truyện hay: tiên hiệp, ngôn tình, kiếm hiệp, trinh thám cập nhật liên tục.">
+    <meta name="keywords" content="truyện chữ, đọc truyện online, truyện hay, tiên hiệp, ngôn tình, kiếm hiệp, trinh thám">
+    <meta name="author" content="TruyệnStorm">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://truyenstorm.com/">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="TruyệnStorm - Đọc Truyện Chữ Online Miễn Phí">
+    <meta property="og:description" content="Kho truyện chữ lớn nhất Việt Nam với hàng nghìn bộ truyện hay được cập nhật liên tục">
+    <meta property="og:url" content="https://truyenstorm.com/">
+    <meta property="og:site_name" content="TruyệnStorm">
+    <meta property="og:image" content="https://truyenstorm.com/assets/img/og-image.jpg">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="TruyệnStorm - Đọc Truyện Chữ Online Miễn Phí">
+    <meta name="twitter:description" content="Kho truyện chữ lớn nhất Việt Nam với hàng nghìn bộ truyện hay được cập nhật liên tục">
+    <meta name="twitter:image" content="https://truyenstorm.com/assets/img/og-image.jpg">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TruyệnStorm">
+    <link rel="apple-touch-icon" href="https://via.placeholder.com/192x192/2563eb/ffffff?text=TS">
+    
+    <!-- Preload critical resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "TruyệnStorm",
+      "url": "https://truyenstorm.com",
+      "description": "Đọc truyện chữ online miễn phí tại TruyệnStorm",
+      "publisher": {
+        "@type": "Organization",
+        "name": "TruyệnStorm",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://truyenstorm.com/assets/img/logo.png"
+        }
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://truyenstorm.com/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    
+    <!-- NOTE: For production, replace CDN with a local build of Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb',
+                        secondary: '#1f2937',
+                        accent: '#f59e0b'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                        'serif': ['Georgia', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="styles-optimized.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- REMOVED: Blocking Loading Screen (Bad for FCP/LCP and SEO) -->
+
+    <!-- Header -->
+    <header class="bg-white shadow-lg sticky top-0 z-50" role="banner">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center" aria-label="Trang chủ TruyệnStorm">
+                        <div class="bg-primary text-white px-3 py-2 rounded-lg font-bold text-lg sm:text-xl mr-3" aria-hidden="true">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <span class="text-xl sm:text-2xl font-bold text-gray-800">TRUYỆN<span class="text-primary">STORM</span></span>
+                    </a>
+                </div>
+                
+                <nav class="hidden lg:flex space-x-8" role="navigation" aria-label="Menu chính">
+                    <a href="index.html" class="text-primary font-semibold border-b-2 border-primary pb-1" aria-current="page">Trang chủ</a>
+                    <a href="story-list.html" class="text-gray-600 hover:text-primary transition-colors duration-300 font-medium">Danh sách</a>
+                    <a href="search.html" class="text-gray-600 hover:text-primary transition-colors duration-300 font-medium">Tìm kiếm</a>
+                    <a href="genres.html" class="text-gray-600 hover:text-primary transition-colors duration-300 font-medium">Thể loại</a>
+                    <a href="pages-list.html" class="text-gray-600 hover:text-primary transition-colors duration-300 font-medium">All Pages</a>
+                </nav>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="relative hidden lg:block">
+                        <label for="search-input" class="sr-only">Tìm kiếm truyện</label>
+                        <input type="search" placeholder="Tìm truyện..." id="search-input"
+                                class="bg-gray-100 text-gray-800 px-4 py-2 pr-12 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white w-48 lg:w-64"
+                                aria-label="Tìm kiếm truyện">
+                        <button class="absolute right-3 top-2.5 text-gray-500 hover:text-primary transition-colors" aria-label="Thực hiện tìm kiếm">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Theme Toggle -->
+                    <button id="theme-toggle" class="hidden lg:block p-2 rounded-full hover:bg-gray-100 transition-colors" aria-label="Chuyển đổi giao diện sáng/tối">
+                        <i class="fas fa-moon text-gray-600"></i>
+                    </button>
+                    
+                    <!-- Mobile menu button -->
+                    <button class="lg:hidden text-gray-600 hover:text-primary transition-colors"
+                             id="mobile-menu-button" aria-label="Mở menu di động" aria-expanded="false" aria-controls="mobile-menu">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div class="lg:hidden bg-white border-t border-gray-200 hidden" id="mobile-menu" role="navigation" aria-label="Menu di động">
+            <div class="container mx-auto px-4 py-4">
+                <div class="relative mb-4">
+                    <label for="mobile-search-input" class="sr-only">Tìm kiếm truyện</label>
+                    <input type="search" id="mobile-search-input" placeholder="Tìm truyện..."
+                            class="w-full bg-gray-100 text-gray-800 px-4 py-2 pr-12 rounded-full focus:outline-none focus:ring-2 focus:ring-primary"
+                           aria-label="Tìm kiếm truyện di động">
+                    <button class="absolute right-3 top-2.5 text-gray-500 hover:text-primary transition-colors" aria-label="Thực hiện tìm kiếm">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <nav class="space-y-2">
+                    <a href="index.html" class="block py-2 text-primary font-semibold" aria-current="page">Trang chủ</a>
+                    <a href="#" class="block py-2 text-gray-600 hover:text-primary transition-colors font-medium">Mới nhất</a>
+                    <a href="#" class="block py-2 text-gray-600 hover:text-primary transition-colors font-medium">Hot</a>
+                    <a href="genres.html" class="block py-2 text-gray-600 hover:text-primary transition-colors font-medium">Thể loại</a>
+                    <a href="#" class="block py-2 text-gray-600 hover:text-primary transition-colors font-medium">Hoàn thành</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <!-- Removed redundant role="banner" -->
+    <section class="relative bg-gradient-to-br from-primary via-blue-600 to-purple-700 text-white py-16 sm:py-20 overflow-hidden hero-bg" aria-label="Giới thiệu">
+        <!-- Background decoration -->
+        <div class="absolute inset-0 bg-black bg-opacity-10" aria-hidden="true"></div>
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden" aria-hidden="true">
+            <div class="absolute top-10 left-10 w-20 h-20 bg-white bg-opacity-10 rounded-full animate-pulse"></div>
+            <div class="absolute top-32 right-20 w-16 h-16 bg-white bg-opacity-5 rounded-full animate-bounce"></div>
+            <div class="absolute bottom-20 left-1/4 w-12 h-12 bg-white bg-opacity-10 rounded-full animate-pulse delay-1000"></div>
+        </div>
+        
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <div class="animate-on-scroll">
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                    Kho Truyện Chữ <span class="text-yellow-300 text-gradient">Lớn Nhất</span> Việt Nam
+                </h1>
+                <p class="text-xl sm:text-2xl mb-8 opacity-90 max-w-3xl mx-auto leading-relaxed">
+                    Hàng nghìn bộ truyện hay đang chờ bạn khám phá. Từ tiên hiệp đến ngôn tình, từ kiếm hiệp đến trinh thám.
+                </p>
+                
+                <!-- Statistics -->
+                <div class="flex flex-wrap justify-center gap-8 mb-10">
+                    <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 min-w-[120px] glass animate-on-scroll">
+                        <div class="text-3xl font-bold counter" data-target="50000">0</div>
+                        <div class="text-blue-200 text-sm">Bộ truyện</div>
+                    </div>
+                    <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 min-w-[120px] glass animate-on-scroll">
+                        <div class="text-3xl font-bold counter" data-target="1000000">0</div>
+                        <div class="text-blue-200 text-sm">Độc giả</div>
+                    </div>
+                    <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 min-w-[120px] glass animate-on-scroll">
+                        <div class="text-3xl font-bold" id="chapter-count">5M+</div>
+                        <div class="text-blue-200 text-sm">Chương</div>
+                    </div>
+                    <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 min-w-[120px]">
+                        <div class="text-3xl font-bold">24/7</div>
+                        <div class="text-blue-200 text-sm">Cập nhật</div>
+                    </div>
+                </div>
+                
+                <!-- Enhanced Search -->
+                <div class="max-w-2xl mx-auto">
+                    <div class="relative">
+                        <label for="hero-search" class="sr-only">Tìm kiếm truyện</label>
+                        <input type="search" id="hero-search" placeholder="Nhập tên truyện, tác giả hoặc thể loại..."
+                               class="w-full bg-white text-gray-800 px-6 py-4 pr-16 rounded-full focus:outline-none focus:ring-4 focus:ring-blue-300 shadow-lg text-lg"
+                               aria-label="Tìm kiếm truyện">
+                        <button class="absolute right-2 top-2 bg-primary text-white p-3 rounded-full hover:bg-blue-700 transition-all duration-300 hover:scale-105" aria-label="Thực hiện tìm kiếm">
+                            <i class="fas fa-search text-lg"></i>
+                        </button>
+                    </div>
+                    <div class="flex flex-wrap justify-center gap-2 mt-4">
+                        <span class="text-blue-200 text-sm">Trending:</span>
+                        <a href="#" class="trending-keyword bg-white bg-opacity-20 text-white px-3 py-1 rounded-full text-sm hover:bg-opacity-30 transition-colors">Ngạo Thế</a>
+                        <a href="#" class="trending-keyword bg-white bg-opacity-20 text-white px-3 py-1 rounded-full text-sm hover:bg-opacity-30 transition-colors">Đấu Phá</a>
+                        <a href="#" class="trending-keyword bg-white bg-opacity-20 text-white px-3 py-1 rounded-full text-sm hover:bg-opacity-30 transition-colors">Hoàn Mỹ</a>
+                        <a href="#" class="trending-keyword bg-white bg-opacity-20 text-white px-3 py-1 rounded-full text-sm hover:bg-opacity-30 transition-colors">Tu Tiên</a>
+                    </div>
+                </div>
+                
+                <!-- CTA Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+                    <a href="genres.html" class="bg-white text-primary px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 hover:scale-105 shadow-lg">
+                        <i class="fas fa-compass mr-2"></i>Khám Phá Ngay
+                    </a>
+                    <a href="story-list.html" class="border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-primary transition-all duration-300 hover:scale-105">
+                        <i class="fas fa-fire mr-2"></i>Truyện Hot
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <!-- Removed redundant role="main" -->
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        
+        <!-- Trending Stories Section -->
+        <section class="mb-12" aria-labelledby="trending-stories">
+            <div class="flex items-center justify-between mb-8">
+                <h2 id="trending-stories" class="text-2xl sm:text-3xl font-bold text-gray-800">
+                    <i class="fas fa-fire text-red-500 mr-2" aria-hidden="true"></i>
+                    Trending Hôm Nay
+                </h2>
+                <a href="#" class="text-primary hover:text-blue-700 font-semibold">Xem tất cả <span aria-hidden="true">→</span></a>
+            </div>
+            
+            <!-- Trending Grid -->
+            <div class="bg-gradient-to-r from-red-50 to-orange-50 rounded-xl p-6 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Article 1 -->
+                    <article class="bg-white rounded-lg p-4 shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                        <div class="flex items-center space-x-4">
+                            <div class="relative">
+                                <img src="https://picsum.photos/80/100?random=trending1" alt="Bìa truyện Thiên Đạo Đồ Thư Quán" 
+                                     class="w-16 h-20 object-cover rounded" loading="lazy" width="64" height="80">
+                                <div class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full animate-pulse">
+                                    #1
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-bold text-gray-800 hover:text-primary transition-colors mb-1">
+                                    <a href="story-detail.html" class="focus:outline-none focus:underline">Thiên Đạo Đồ Thư Quán</a>
+                                </h3>
+                                <p class="text-sm text-gray-500 mb-2">Tiên Hiệp</p>
+                                <div class="flex items-center space-x-3 text-xs text-gray-600">
+                                    <span class="view-count" aria-label="1,248,539 lượt xem">🔥 1,248,539</span>
+                                    <span aria-label="Chương 2847">📖 Ch.2847</span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <!-- Article 2 -->
+                    <article class="bg-white rounded-lg p-4 shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                        <div class="flex items-center space-x-4">
+                            <div class="relative">
+                                <img src="https://picsum.photos/80/100?random=trending2" alt="Bìa truyện Triệu Hồi Sư Của Nữ Hoàng" 
+                                     class="w-16 h-20 object-cover rounded" loading="lazy" width="64" height="80">
+                                <div class="absolute -top-2 -right-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full animate-pulse">
+                                    #2
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-bold text-gray-800 hover:text-primary transition-colors mb-1">
+                                    <a href="story-detail.html" class="focus:outline-none focus:underline">Triệu Hồi Sư Của Nữ Hoàng</a>
+                                </h3>
+                                <p class="text-sm text-gray-500 mb-2">Fantasy • Ngôn Tình</p>
+                                <div class="flex items-center space-x-3 text-xs text-gray-600">
+                                    <span class="view-count" aria-label="892,346 lượt xem">🔥 892,346</span>
+                                    <span aria-label="Chương 458">📖 Ch.458</span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <!-- Article 3 -->
+                    <article class="bg-white rounded-lg p-4 shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                        <div class="flex items-center space-x-4">
+                            <div class="relative">
+                                <img src="https://picsum.photos/80/100?random=trending3" alt="Bìa truyện Xuyên Không Thành Phản Diện" 
+                                     class="w-16 h-20 object-cover rounded" loading="lazy" width="64" height="80">
+                                <div class="absolute -top-2 -right-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded-full animate-pulse">
+                                    #3
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-bold text-gray-800 hover:text-primary transition-colors mb-1">
+                                    <a href="story-detail.html" class="focus:outline-none focus:underline">Xuyên Không Thành Phản Diện</a>
+                                </h3>
+                                <p class="text-sm text-gray-500 mb-2">Xuyên Không • Hài Hước</p>
+                                <div class="flex items-center space-x-3 text-xs text-gray-600">
+                                    <span class="view-count" aria-label="756,892 lượt xem">🔥 756,892</span>
+                                    <span aria-label="Chương 1245">📖 Ch.1245</span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Stories Section -->
+        <section class="mb-12" aria-labelledby="featured-stories">
+            <div class="flex items-center justify-between mb-8">
+                <h2 id="featured-stories" class="text-2xl sm:text-3xl font-bold text-gray-800">
+                    <i class="fas fa-star text-yellow-500 mr-2" aria-hidden="true"></i>
+                    Truyện Nổi Bật
+                </h2>
+                <a href="#" class="text-primary hover:text-blue-700 font-semibold">Xem tất cả <span aria-hidden="true">→</span></a>
+            </div>
+            
+            <!-- Featured Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
+                <!-- Story Card 1 -->
+                <article class="group story-card animate-on-scroll">
+                    <a href="story-detail.html" class="block h-full">
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 h-full flex flex-col border border-gray-100 hover:border-primary/20">
+                            <div class="relative flex-shrink-0 overflow-hidden aspect-[2/3]">
+                                <img src="https://picsum.photos/200/280?random=story1" alt="Bìa truyện Ngạo Thế Cửu Trọng Thiên"
+                                      class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                     loading="lazy">
+                                <div class="absolute top-3 left-3">
+                                    <span class="bg-red-500 text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg animate-pulse">Hot</span>
+                                </div>
+                                <div class="absolute top-3 right-3">
+                                    <span class="bg-black/70 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full font-medium">Full</span>
+                                </div>
+                            </div>
+                            
+                            <div class="p-4 flex-1 flex flex-col justify-between">
+                                <div>
+                                    <h3 class="font-bold text-gray-800 text-sm sm:text-base line-clamp-2 group-hover:text-primary transition-colors mb-2 leading-tight">
+                                        Ngạo Thế Cửu Trọng Thiên
+                                    </h3>
+                                    <p class="text-xs sm:text-sm text-primary/70 font-medium mb-3">Tiên Hiệp</p>
+                                </div>
+                                <div class="flex items-center justify-between mt-auto pt-2 border-t border-gray-100">
+                                    <div class="flex text-yellow-400 text-sm" aria-label="Đánh giá 5 sao">
+                                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                                    </div>
+                                    <span class="text-sm font-bold text-gray-700">9.8</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </article>
+                
+                <!-- More articles would go here... (Truncated for brevity in optimized example) -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-secondary text-white py-8 sm:py-12" role="contentinfo">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+                <div class="sm:col-span-2 lg:col-span-1">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-primary text-white px-3 py-2 rounded-lg font-bold text-lg sm:text-xl mr-3" aria-hidden="true">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <span class="text-xl sm:text-2xl font-bold">TRUYỆN<span class="text-primary">STORM</span></span>
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed">Kho truyện chữ lớn nhất Việt Nam với hàng nghìn bộ truyện hay được cập nhật hàng ngày.</p>
+                </div>
+                <div>
+                    <h5 class="font-bold mb-3 sm:mb-4 text-sm sm:text-base">Thể Loại</h5>
+                    <ul class="space-y-1 sm:space-y-2 text-xs sm:text-sm text-gray-400">
+                        <li><a href="genres.html" class="hover:text-white transition-colors">Tiên Hiệp</a></li>
+                        <li><a href="genres.html" class="hover:text-white transition-colors">Ngôn Tình</a></li>
+                        <li><a href="genres.html" class="hover:text-white transition-colors">Kiếm Hiệp</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-bold mb-3 sm:mb-4 text-sm sm:text-base">Hỗ Trợ</h5>
+                    <ul class="space-y-1 sm:space-y-2 text-xs sm:text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Trung Tâm Trợ Giúp</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Liên Hệ</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Chính Sách</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-bold mb-3 sm:mb-4 text-sm sm:text-base">Theo Dõi</h5>
+                    <div class="flex space-x-3 sm:space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors p-2 hover:bg-gray-700 rounded" aria-label="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors p-2 hover:bg-gray-700 rounded" aria-label="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-6 sm:mt-8 pt-6 sm:pt-8 text-center text-xs sm:text-sm text-gray-400">
+                <p>&copy; 2025 TruyệnStorm. Tất cả quyền được bảo lưu.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="enhanced-script.js"></script>
+    <script src="advanced-features.js"></script>
+</body>
+</html>
