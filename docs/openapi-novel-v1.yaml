@@ -1,0 +1,2065 @@
+openapi: 3.1.0
+info:
+  title: Novel Manager API
+  version: 1.4.0
+  summary: Server-to-server ingest and public read API for multi-source novel platform
+  description: |
+    OpenAPI contract derived from `docs/wp-novel-plugin-spec.md` (spec v1.4).
+
+    Key architecture constraints:
+    - Multi-source ingest is required from day one.
+    - Story detail identity is `(source, slug)`.
+    - Ingest uses at-least-once delivery with required idempotency key.
+    - HMAC signature base string: `METHOD.PATH.TIMESTAMP.NONCE.BODY_SHA256`.
+servers:
+  - url: https://example.com/wp-json/novel/v1
+    description: Production
+  - url: https://staging.example.com/wp-json/novel/v1
+    description: Staging
+tags:
+  - name: Ingest
+    description: Private server-to-server write and status endpoints
+  - name: Public
+    description: Public read endpoints
+  - name: User
+    description: User authentication, reading progress, and library endpoints
+
+paths:
+  /ingest/stories/bulk:
+    post:
+      tags: [Ingest]
+      summary: Ingest story batch
+      description: |
+        Queues story items for asynchronous upsert.
+
+        Batch constraints:
+        - `items <= 300`
+        - decompressed request body `<= 5MB`
+
+        Response code semantics:
+        - `200`: All items processed synchronously (small batch, immediate upsert).
+        - `202`: Items enqueued for asynchronous processing; use status endpoint to track progress.
+      security:
+        - NovelKeyId: []
+          NovelTimestamp: []
+          NovelNonce: []
+          NovelSignature: []
+      parameters:
+        - $ref: '#/components/parameters/XNovelRequestId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/ContentEncoding'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IngestStoriesBulkRequest'
+      responses:
+        '200':
+          description: Accepted (may include per-item rejections)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IngestAcceptedResponse'
+        '202':
+          description: Accepted and queued asynchronously
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IngestAcceptedResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /ingest/chapters/bulk:
+    post:
+      tags: [Ingest]
+      summary: Ingest chapter batch
+      description: |
+        Queues chapter items for asynchronous upsert.
+
+        Batch constraints:
+        - `items <= 300`
+        - decompressed request body `<= 12MB`
+        - each chapter `content_raw <= 256KB` (hard limit)
+
+        Response code semantics:
+        - `200`: All items processed synchronously (small batch, immediate upsert).
+        - `202`: Items enqueued for asynchronous processing; use status endpoint to track progress.
+      security:
+        - NovelKeyId: []
+          NovelTimestamp: []
+          NovelNonce: []
+          NovelSignature: []
+      parameters:
+        - $ref: '#/components/parameters/XNovelRequestId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/ContentEncoding'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IngestChaptersBulkRequest'
+      responses:
+        '200':
+          description: Accepted (may include per-item rejections)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IngestAcceptedResponse'
+        '202':
+          description: Accepted and queued asynchronously
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IngestAcceptedResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /ingest/rebuild-stats:
+    post:
+      tags: [Ingest]
+      summary: Rebuild aggregate story stats
+      description: |
+        Requires key permission `ingest:stats` (admin-only operation).
+        This is an asynchronous operation; response `202` indicates the job has been queued.
+      security:
+        - NovelKeyId: []
+          NovelTimestamp: []
+          NovelNonce: []
+          NovelSignature: []
+      parameters:
+        - $ref: '#/components/parameters/XNovelRequestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RebuildStatsRequest'
+      responses:
+        '200':
+          description: Rebuild job completed synchronously
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IngestAcceptedResponse'
+        '202':
+          description: Rebuild job queued for asynchronous processing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IngestAcceptedResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /ingest/requests/{request_id}:
+    get:
+      tags: [Ingest]
+      summary: Get ingest request status
+      security:
+        - NovelKeyId: []
+          NovelTimestamp: []
+          NovelNonce: []
+          NovelSignature: []
+      parameters:
+        - name: request_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Request status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IngestRequestStatusResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /stories:
+    get:
+      tags: [Public]
+      summary: List stories
+      parameters:
+        - name: source
+          in: query
+          description: Filter stories by ingestion source
+          schema:
+            type: string
+            maxLength: 40
+        - name: q
+          in: query
+          schema:
+            type: string
+            maxLength: 255
+        - name: status
+          in: query
+          schema:
+            type: integer
+            enum: [0, 1, 2, 3, 4]
+            description: 0=draft, 1=ongoing, 2=completed, 3=hiatus, 4=dropped. If omitted, server defaults to status scope [1,2].
+        - name: genre
+          in: query
+          schema:
+            type: string
+            maxLength: 120
+        - name: author
+          in: query
+          schema:
+            type: string
+            maxLength: 191
+        - name: updated_after
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [updated_desc, popular_desc, newest_desc]
+            default: updated_desc
+          description: |
+            Sort mapping:
+            - `updated_desc` => `(updated_at DESC, id DESC)`
+            - `popular_desc` => `(popularity_score DESC, id DESC)`
+            - `newest_desc` => `(published_at DESC, id DESC)`
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: cursor
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Story list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StoryListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /stories/{source}/{slug}:
+    get:
+      tags: [Public]
+      summary: Get story detail by source and slug
+      parameters:
+        - name: source
+          in: path
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 40
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 191
+            pattern: '^[a-z0-9-]+$'
+      responses:
+        '200':
+          description: Story detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StoryDetailResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /stories/{id}/chapters:
+    get:
+      tags: [Public]
+      summary: List chapters by story id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+        - name: from_chapter_no
+          in: query
+          schema:
+            type: number
+            multipleOf: 0.01
+        - name: to_chapter_no
+          in: query
+          schema:
+            type: number
+            multipleOf: 0.01
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+            default: 50
+        - name: cursor
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Chapter list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChapterListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /chapters/{id}:
+    get:
+      tags: [Public]
+      summary: Get chapter detail
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+        - name: include_content
+          in: query
+          schema:
+            type: boolean
+            default: true
+      responses:
+        '200':
+          description: Chapter detail
+          headers:
+            ETag:
+              description: Entity tag for chapter response caching
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChapterDetailResponse'
+        '304':
+          description: Not modified (when `If-None-Match` matches)
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /auth/register:
+    post:
+      tags: [User]
+      summary: Register new user account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          description: Username or email already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+
+  /auth/login:
+    post:
+      tags: [User]
+      summary: Authenticate and obtain JWT tokens
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+
+  /auth/refresh:
+    post:
+      tags: [User]
+      summary: Refresh access token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshTokenRequest'
+      responses:
+        '200':
+          description: Token refreshed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefreshResponse'
+        '401':
+          description: Invalid or expired refresh token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /me/library:
+    get:
+      tags: [User]
+      summary: Get user library (reading progress + bookmarks)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [reading, bookmarks, all]
+            default: all
+        - name: bookmark_status
+          in: query
+          schema:
+            type: integer
+            enum: [0, 1, 2, 3]
+            description: 0=following, 1=favorite, 2=plan_to_read, 3=dropped
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: cursor
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Library list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LibraryResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /me/progress/{story_id}:
+    put:
+      tags: [User]
+      summary: Update reading progress for a story
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: story_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProgressRequest'
+      responses:
+        '200':
+          description: Progress updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadingProgressItem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /me/bookmarks/{story_id}:
+    post:
+      tags: [User]
+      summary: Add or update bookmark
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: story_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpsertBookmarkRequest'
+      responses:
+        '200':
+          description: Bookmark upserted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookmarkItem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [User]
+      summary: Remove bookmark
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: story_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '204':
+          description: Bookmark removed
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /me/history:
+    get:
+      tags: [User]
+      summary: Get recent reading history
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: cursor
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Reading history
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadingHistoryResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /me/progress/bulk:
+    post:
+      tags: [User]
+      summary: Batch update reading progress (mobile offline sync)
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkProgressRequest'
+      responses:
+        '200':
+          description: Progress batch updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkProgressResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /me/settings:
+    get:
+      tags: [User]
+      summary: Get user reading preferences
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Reading settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadingSettings'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    put:
+      tags: [User]
+      summary: Update user reading preferences
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadingSettings'
+      responses:
+        '200':
+          description: Settings updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadingSettings'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /me/ratings/{story_id}:
+    post:
+      tags: [User]
+      summary: Submit or update rating/review
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: story_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpsertRatingRequest'
+      responses:
+        '200':
+          description: Rating upserted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RatingItem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [User]
+      summary: Remove own rating
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: story_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '204':
+          description: Rating removed
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /stories/{source}/{slug}/ratings:
+    get:
+      tags: [Public]
+      summary: List ratings for a story
+      parameters:
+        - name: source
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+        - name: cursor
+          in: query
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [newest, highest, lowest]
+            default: newest
+          description: newest => created_at desc, highest => score desc then created_at desc, lowest => score asc then created_at desc
+      responses:
+        '200':
+          description: Ratings list with summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RatingsListResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /stories/{id}/comments:
+    get:
+      tags: [Public]
+      summary: List story-level comments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+        - name: cursor
+          in: query
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [newest, oldest, top]
+            default: newest
+          description: top => is_pinned desc, likes_count desc, created_at desc
+      responses:
+        '200':
+          description: Comments list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentsListResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /chapters/{id}/comments:
+    get:
+      tags: [Public]
+      summary: List chapter-level comments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+        - name: cursor
+          in: query
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [newest, oldest, top]
+            default: newest
+          description: top => is_pinned desc, likes_count desc, created_at desc
+      responses:
+        '200':
+          description: Comments list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentsListResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /me/comments:
+    post:
+      tags: [User]
+      summary: Post a new comment
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCommentRequest'
+      responses:
+        '201':
+          description: Comment created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentItem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /me/comments/{id}:
+    delete:
+      tags: [User]
+      summary: Delete own comment
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Comment deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /me/reports:
+    post:
+      tags: [User]
+      summary: Report inappropriate content
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReportRequest'
+      responses:
+        '201':
+          description: Report submitted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+components:
+  securitySchemes:
+    NovelKeyId:
+      type: apiKey
+      in: header
+      name: X-Novel-Key-Id
+      description: Key identifier
+    NovelTimestamp:
+      type: apiKey
+      in: header
+      name: X-Novel-Timestamp
+      description: Unix timestamp in seconds (max skew 300s)
+    NovelNonce:
+      type: apiKey
+      in: header
+      name: X-Novel-Nonce
+      description: Unique nonce; replay blocked for 10 minutes
+    NovelSignature:
+      type: apiKey
+      in: header
+      name: X-Novel-Signature
+      description: HMAC-SHA256 over `METHOD.PATH.TIMESTAMP.NONCE.BODY_SHA256`
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT access token for user-facing endpoints
+
+  parameters:
+    XNovelRequestId:
+      name: X-Novel-Request-Id
+      in: header
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Client-generated request UUID for tracing
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 120
+      description: Required for ingest routes; dedupe window default 72 hours
+    ContentEncoding:
+      name: Content-Encoding
+      in: header
+      required: false
+      schema:
+        type: string
+        enum: [gzip, identity]
+        default: identity
+      description: Optional gzip compression for request body. Size limits apply to decompressed payload.
+
+  responses:
+    BadRequest:
+      description: Invalid request payload or parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Auth header invalid (e.g. invalid_signature, timestamp_skew, nonce_replay)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: Key inactive or permission denied
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Conflict:
+      description: Idempotency conflict (`same key + different payload`)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    PayloadTooLarge:
+      description: Request payload exceeds configured limits
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    UnprocessableEntity:
+      description: Schema validation failure
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    RateLimited:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  schemas:
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              description: Canonical error code
+            message:
+              type: string
+            details:
+              description: Optional structured context
+
+    IngestItemError:
+      type: object
+      required: [index, code, message]
+      properties:
+        index:
+          type: integer
+          minimum: 0
+        code:
+          type: string
+        message:
+          type: string
+
+    IngestAcceptedResponse:
+      type: object
+      required: [request_id, accepted_count, rejected_count, errors]
+      properties:
+        request_id:
+          type: string
+          format: uuid
+        accepted_count:
+          type: integer
+          minimum: 0
+        rejected_count:
+          type: integer
+          minimum: 0
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/IngestItemError'
+
+    IngestStoryItem:
+      type: object
+      required: [source_story_id, slug, title, updated_at_source]
+      properties:
+        source_story_id:
+          type: string
+          minLength: 1
+          maxLength: 191
+        slug:
+          type: string
+          minLength: 1
+          maxLength: 191
+          pattern: '^[a-z0-9-]+$'
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+        title_original:
+          type: string
+          maxLength: 255
+        author_name:
+          type: string
+          maxLength: 191
+        status:
+          type: integer
+          enum: [0, 1, 2, 3, 4]
+          default: 0
+        cover_url:
+          type: string
+          format: uri
+          maxLength: 1024
+        summary:
+          type: string
+        language:
+          type: string
+          maxLength: 10
+          default: vi
+        aliases:
+          type: array
+          maxItems: 100
+          items:
+            type: string
+            minLength: 1
+            maxLength: 255
+        genres:
+          type: array
+          maxItems: 50
+          items:
+            type: string
+            minLength: 1
+            maxLength: 120
+        updated_at_source:
+          type: string
+          format: date-time
+
+    IngestStoriesBulkRequest:
+      type: object
+      required: [source, items]
+      properties:
+        source:
+          type: string
+          minLength: 1
+          maxLength: 40
+        items:
+          type: array
+          minItems: 1
+          maxItems: 300
+          items:
+            $ref: '#/components/schemas/IngestStoryItem'
+
+    IngestChapterItem:
+      type: object
+      required:
+        - source_story_id
+        - chapter_no
+        - slug
+        - title
+        - content_raw
+        - updated_at_source
+      properties:
+        source_story_id:
+          type: string
+          minLength: 1
+          maxLength: 191
+        source_chapter_id:
+          type: string
+          maxLength: 191
+        chapter_no:
+          type: number
+          multipleOf: 0.01
+        slug:
+          type: string
+          minLength: 1
+          maxLength: 191
+          pattern: '^[a-z0-9-]+$'
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+        content_raw:
+          type: string
+          minLength: 1
+          maxLength: 262144
+        updated_at_source:
+          type: string
+          format: date-time
+        content_hash:
+          type: string
+          pattern: '^[a-f0-9]{64}$'
+          minLength: 64
+          maxLength: 64
+          description: |
+            Optional client-computed SHA-256 hex digest of `content_raw`.
+            If omitted, server computes it automatically.
+            If provided, server uses it to skip body update when hash matches existing content.
+        published_at:
+          type: string
+          format: date-time
+        is_published:
+          type: boolean
+          default: true
+
+    IngestChaptersBulkRequest:
+      type: object
+      required: [source, items]
+      properties:
+        source:
+          type: string
+          minLength: 1
+          maxLength: 40
+        items:
+          type: array
+          minItems: 1
+          maxItems: 300
+          items:
+            $ref: '#/components/schemas/IngestChapterItem'
+
+    RebuildStatsRequest:
+      type: object
+      required: [story_ids]
+      properties:
+        story_ids:
+          type: array
+          minItems: 1
+          maxItems: 10000
+          items:
+            type: integer
+            format: int64
+            minimum: 1
+
+    IngestRequestStatusResponse:
+      type: object
+      required:
+        - request_id
+        - source
+        - job_type
+        - status
+        - total_items
+        - accepted_items
+        - rejected_items
+        - processed_items
+        - failed_items
+        - updated_at
+      properties:
+        request_id:
+          type: string
+          format: uuid
+        source:
+          type: string
+          maxLength: 40
+        job_type:
+          type: string
+          enum: [stories_bulk, chapters_bulk, rebuild_stats]
+        status:
+          type: string
+          enum: [queued, processing, completed, partially_failed, failed]
+        total_items:
+          type: integer
+          minimum: 0
+        accepted_items:
+          type: integer
+          minimum: 0
+        rejected_items:
+          type: integer
+          minimum: 0
+        processed_items:
+          type: integer
+          minimum: 0
+        failed_items:
+          type: integer
+          minimum: 0
+        last_error:
+          type:
+            - string
+            - 'null'
+        updated_at:
+          type: string
+          format: date-time
+
+    StoryListItem:
+      type: object
+      required: [id, source, slug, title, status, chapter_count, updated_at]
+      properties:
+        id:
+          type: integer
+          format: int64
+        source:
+          type: string
+          maxLength: 40
+        slug:
+          type: string
+          maxLength: 191
+        title:
+          type: string
+          maxLength: 255
+        author_name:
+          type:
+            - string
+            - 'null'
+          maxLength: 191
+        status:
+          type: integer
+          enum: [0, 1, 2, 3, 4]
+        cover_url:
+          type:
+            - string
+            - 'null'
+          format: uri
+        language:
+          type: string
+          maxLength: 10
+        chapter_count:
+          type: integer
+          minimum: 0
+        last_chapter_no:
+          type:
+            - number
+            - 'null'
+        popularity_score:
+          type: number
+        genres:
+          type: array
+          items:
+            type: string
+        published_at:
+          type:
+            - string
+            - 'null'
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    StoryListResponse:
+      type: object
+      required: [items, has_more]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/StoryListItem'
+        next_cursor:
+          type:
+            - string
+            - 'null'
+        has_more:
+          type: boolean
+
+    StoryDetail:
+      type: object
+      required:
+        - id
+        - source
+        - slug
+        - title
+        - status
+        - chapter_count
+        - updated_at
+      properties:
+        id:
+          type: integer
+          format: int64
+        source:
+          type: string
+          maxLength: 40
+        source_story_id:
+          type: string
+          maxLength: 191
+        slug:
+          type: string
+          maxLength: 191
+        title:
+          type: string
+          maxLength: 255
+        title_original:
+          type:
+            - string
+            - 'null'
+          maxLength: 255
+        author_name:
+          type:
+            - string
+            - 'null'
+          maxLength: 191
+        status:
+          type: integer
+          enum: [0, 1, 2, 3, 4]
+        summary:
+          type:
+            - string
+            - 'null'
+        language:
+          type: string
+          maxLength: 10
+        cover_url:
+          type:
+            - string
+            - 'null'
+          format: uri
+        chapter_count:
+          type: integer
+          minimum: 0
+        word_count:
+          type: integer
+          minimum: 0
+        last_chapter_no:
+          type:
+            - number
+            - 'null'
+        popularity_score:
+          type: number
+        rating_avg:
+          type:
+            - number
+            - 'null'
+          description: Average rating (scale 0.00-10.00)
+        rating_count:
+          type: integer
+          minimum: 0
+          description: Total number of ratings
+        view_count:
+          type: integer
+          minimum: 0
+          description: Total story views
+        aliases:
+          type: array
+          items:
+            type: string
+        genres:
+          type: array
+          items:
+            type: string
+        latest_chapter:
+          oneOf:
+            - $ref: '#/components/schemas/ChapterListItem'
+            - type: 'null'
+          description: Latest chapter snapshot, null if story has no chapters yet
+        published_at:
+          type:
+            - string
+            - 'null'
+          format: date-time
+        updated_at_source:
+          type:
+            - string
+            - 'null'
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    StoryDetailResponse:
+      type: object
+      required: [story]
+      properties:
+        story:
+          $ref: '#/components/schemas/StoryDetail'
+
+    ChapterListItem:
+      type: object
+      required: [id, story_id, chapter_no, slug, title, is_published, updated_at]
+      properties:
+        id:
+          type: integer
+          format: int64
+        story_id:
+          type: integer
+          format: int64
+        source_chapter_id:
+          type:
+            - string
+            - 'null'
+          maxLength: 191
+        chapter_no:
+          type: number
+        slug:
+          type: string
+          maxLength: 191
+        title:
+          type: string
+          maxLength: 255
+        is_published:
+          type: boolean
+        word_count:
+          type: integer
+          minimum: 0
+        published_at:
+          type:
+            - string
+            - 'null'
+          format: date-time
+        updated_at_source:
+          type:
+            - string
+            - 'null'
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        is_read:
+          type: boolean
+          description: Whether authenticated user has read this chapter (only present with Bearer token)
+
+    ChapterListResponse:
+      type: object
+      required: [items, has_more]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChapterListItem'
+        next_cursor:
+          type:
+            - string
+            - 'null'
+        has_more:
+          type: boolean
+
+    ChapterDetail:
+      allOf:
+        - $ref: '#/components/schemas/ChapterListItem'
+        - type: object
+          properties:
+            content_raw:
+              type:
+                - string
+                - 'null'
+            content_html:
+              type:
+                - string
+                - 'null'
+            content_hash:
+              type:
+                - string
+                - 'null'
+              pattern: '^[a-f0-9]{64}$'
+              minLength: 64
+              maxLength: 64
+              description: Hex encoded SHA-256 of normalized raw content
+            content_size:
+              type: integer
+              minimum: 0
+            prev_chapter:
+              oneOf:
+                - $ref: '#/components/schemas/ChapterNavItem'
+                - type: 'null'
+              description: Previous chapter navigation info
+            next_chapter:
+              oneOf:
+                - $ref: '#/components/schemas/ChapterNavItem'
+                - type: 'null'
+              description: Next chapter navigation info
+
+    ChapterDetailResponse:
+      type: object
+      required: [chapter]
+      properties:
+        chapter:
+          $ref: '#/components/schemas/ChapterDetail'
+
+    RegisterRequest:
+      type: object
+      required: [username, email, password]
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 60
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+          maxLength: 128
+        display_name:
+          type: string
+          maxLength: 100
+
+    LoginRequest:
+      type: object
+      required: [login, password]
+      properties:
+        login:
+          type: string
+          description: Username or email
+        password:
+          type: string
+
+    AuthResponse:
+      type: object
+      required: [user_id, username, access_token, refresh_token, expires_at]
+      properties:
+        user_id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        access_token:
+          type: string
+        refresh_token:
+          type: string
+        expires_at:
+          type: string
+          format: date-time
+
+    RefreshTokenRequest:
+      type: object
+      required: [refresh_token]
+      properties:
+        refresh_token:
+          type: string
+
+    TokenRefreshResponse:
+      type: object
+      required: [access_token, refresh_token, expires_at]
+      properties:
+        access_token:
+          type: string
+        refresh_token:
+          type: string
+        expires_at:
+          type: string
+          format: date-time
+
+    UpdateProgressRequest:
+      type: object
+      required: [chapter_id, chapter_no]
+      properties:
+        chapter_id:
+          type: integer
+          format: int64
+          minimum: 1
+        chapter_no:
+          type: number
+          multipleOf: 0.01
+        scroll_position:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Scroll percentage (0.0 to 1.0)
+
+    ReadingProgressItem:
+      type: object
+      required: [story_id, chapter_id, chapter_no, updated_at]
+      properties:
+        story_id:
+          type: integer
+          format: int64
+        chapter_id:
+          type: integer
+          format: int64
+        chapter_no:
+          type: number
+        scroll_position:
+          type:
+            - number
+            - 'null'
+        updated_at:
+          type: string
+          format: date-time
+
+    UpsertBookmarkRequest:
+      type: object
+      properties:
+        status:
+          type: integer
+          enum: [0, 1, 2, 3]
+          default: 0
+          description: 0=following, 1=favorite, 2=plan_to_read, 3=dropped
+        notify_new_chapter:
+          type: boolean
+          default: true
+
+    BookmarkItem:
+      type: object
+      required: [story_id, status, notify_new_chapter, created_at, updated_at]
+      properties:
+        story_id:
+          type: integer
+          format: int64
+        status:
+          type: integer
+          enum: [0, 1, 2, 3]
+        notify_new_chapter:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    LibraryItem:
+      type: object
+      required: [story_id, story_title, story_slug, story_source]
+      properties:
+        story_id:
+          type: integer
+          format: int64
+        story_title:
+          type: string
+        story_slug:
+          type: string
+        story_source:
+          type: string
+        cover_url:
+          type:
+            - string
+            - 'null'
+          format: uri
+        chapter_count:
+          type: integer
+          minimum: 0
+        status:
+          type: integer
+          enum: [0, 1, 2, 3, 4]
+        reading_progress:
+          oneOf:
+            - $ref: '#/components/schemas/ReadingProgressItem'
+            - type: 'null'
+        bookmark:
+          oneOf:
+            - $ref: '#/components/schemas/BookmarkItem'
+            - type: 'null'
+
+    LibraryResponse:
+      type: object
+      required: [items, has_more]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/LibraryItem'
+        next_cursor:
+          type:
+            - string
+            - 'null'
+        has_more:
+          type: boolean
+
+    ReadingHistoryItem:
+      type: object
+      required: [story_id, story_title, chapter_id, chapter_title, chapter_no, read_at]
+      properties:
+        story_id:
+          type: integer
+          format: int64
+        story_title:
+          type: string
+        chapter_id:
+          type: integer
+          format: int64
+        chapter_title:
+          type: string
+        chapter_no:
+          type: number
+        read_at:
+          type: string
+          format: date-time
+
+    ReadingHistoryResponse:
+      type: object
+      required: [items, has_more]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReadingHistoryItem'
+        next_cursor:
+          type:
+            - string
+            - 'null'
+        has_more:
+          type: boolean
+
+    ChapterNavItem:
+      type: object
+      required: [id, chapter_no, slug, title]
+      properties:
+        id:
+          type: integer
+          format: int64
+        chapter_no:
+          type: number
+        slug:
+          type: string
+        title:
+          type: string
+
+    BulkProgressRequest:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          minItems: 1
+          maxItems: 50
+          items:
+            type: object
+            required: [story_id, chapter_id, chapter_no]
+            properties:
+              story_id:
+                type: integer
+                format: int64
+                minimum: 1
+              chapter_id:
+                type: integer
+                format: int64
+                minimum: 1
+              chapter_no:
+                type: number
+                multipleOf: 0.01
+              scroll_position:
+                type: number
+                minimum: 0
+                maximum: 1
+
+    BulkProgressResponse:
+      type: object
+      required: [updated_count, items]
+      properties:
+        updated_count:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReadingProgressItem'
+
+    ReadingSettings:
+      type: object
+      properties:
+        font_size:
+          type: integer
+          minimum: 10
+          maximum: 32
+          default: 16
+        font_family:
+          type: string
+          default: default
+        line_height:
+          type: number
+          minimum: 1.0
+          maximum: 3.0
+          default: 1.8
+        theme:
+          type: string
+          enum: [light, dark, sepia]
+          default: light
+        page_width:
+          type: string
+          enum: [narrow, medium, wide]
+          default: medium
+
+    UpsertRatingRequest:
+      type: object
+      required: [score]
+      properties:
+        score:
+          type: integer
+          minimum: 1
+          maximum: 10
+        review_text:
+          type: string
+          maxLength: 2000
+
+    RatingItem:
+      type: object
+      required: [story_id, user_id, score, created_at, updated_at]
+      properties:
+        story_id:
+          type: integer
+          format: int64
+        user_id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        score:
+          type: integer
+          minimum: 1
+          maximum: 10
+        review_text:
+          type:
+            - string
+            - 'null'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    RatingsSummary:
+      type: object
+      required: [avg, count, distribution]
+      properties:
+        avg:
+          type: number
+        count:
+          type: integer
+        distribution:
+          type: object
+          description: Count per score bucket (1-10)
+          additionalProperties:
+            type: integer
+
+    RatingsListResponse:
+      type: object
+      required: [items, has_more, summary]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/RatingItem'
+        next_cursor:
+          type:
+            - string
+            - 'null'
+        has_more:
+          type: boolean
+        summary:
+          $ref: '#/components/schemas/RatingsSummary'
+
+    CreateCommentRequest:
+      type: object
+      required: [story_id, content]
+      properties:
+        story_id:
+          type: integer
+          format: int64
+        chapter_id:
+          type: integer
+          format: int64
+          description: Omit for story-level comment
+        parent_id:
+          type: integer
+          format: int64
+          description: For replies (max depth 2)
+        content:
+          type: string
+          minLength: 1
+          maxLength: 2000
+
+    CommentItem:
+      type: object
+      required: [id, user_id, story_id, content, likes_count, created_at]
+      properties:
+        id:
+          type: integer
+          format: int64
+        user_id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        story_id:
+          type: integer
+          format: int64
+        chapter_id:
+          type:
+            - integer
+            - 'null'
+          format: int64
+        parent_id:
+          type:
+            - integer
+            - 'null'
+          format: int64
+        content:
+          type: string
+        likes_count:
+          type: integer
+          minimum: 0
+        is_pinned:
+          type: boolean
+        replies:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommentItem'
+          description: Nested replies (max depth 1)
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CommentsListResponse:
+      type: object
+      required: [items, has_more]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommentItem'
+        next_cursor:
+          type:
+            - string
+            - 'null'
+        has_more:
+          type: boolean
+
+    CreateReportRequest:
+      type: object
+      required: [entity_type, entity_id, reason]
+      properties:
+        entity_type:
+          type: string
+          enum: [story, chapter, comment]
+        entity_id:
+          type: integer
+          format: int64
+        reason:
+          type: string
+          enum: [spam, inappropriate, copyright, other]
+        detail:
+          type: string
+          maxLength: 500
+
+    ReportResponse:
+      type: object
+      required: [id, status, created_at]
+      properties:
+        id:
+          type: integer
+          format: int64
+        status:
+          type: integer
+          description: 0=pending
+        created_at:
+          type: string
+          format: date-time
