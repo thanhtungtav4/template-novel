@@ -56,68 +56,225 @@
 
     <style>
         /* Reading-specific styles */
+        body {
+            --reader-font-size: 17px;
+            --reader-line-height: 1.95;
+            --reader-letter-spacing: 0.01em;
+            --reader-max-width: 68ch;
+        }
+
         .reading-bg-light {
-            background: #ffffff;
+            background: #f8fafc;
             color: #1f2937;
         }
 
         .reading-bg-dark {
-            background: #1a1a1a;
-            color: #f9fafb;
+            background: #0f172a;
+            color: #e2e8f0;
         }
 
         .reading-bg-sepia {
-            background: #f4f1e8;
+            background: #f4efe2;
             color: #5c4f3a;
         }
 
         .font-size-small {
-            font-size: 14px;
-            line-height: 1.6;
+            --reader-font-size: 15px;
+            --reader-line-height: 1.85;
         }
 
         .font-size-medium {
-            font-size: 16px;
-            line-height: 1.7;
+            --reader-font-size: 17px;
+            --reader-line-height: 1.95;
         }
 
         .font-size-large {
-            font-size: 18px;
-            line-height: 1.8;
+            --reader-font-size: 19px;
+            --reader-line-height: 2;
         }
 
         .font-size-xlarge {
-            font-size: 20px;
-            line-height: 1.9;
+            --reader-font-size: 21px;
+            --reader-line-height: 2.05;
         }
 
         .toolbar-hidden {
-            transform: translateY(-100%);
+            transform: translateY(-110%);
+            opacity: 0.96;
         }
 
         .toolbar-visible {
             transform: translateY(0);
+            opacity: 1;
+        }
+
+        .reader-main {
+            padding-top: 4.75rem;
+            padding-bottom: 6.5rem;
         }
 
         .chapter-content {
-            max-width: 800px;
+            max-width: 960px;
             margin: 0 auto;
-            padding: 20px;
+            padding: clamp(1rem, 3vw, 2rem) 1rem;
+        }
+
+        .chapter-text {
+            max-width: var(--reader-max-width);
+            margin: 0 auto;
+            font-size: var(--reader-font-size);
+            line-height: var(--reader-line-height);
+            letter-spacing: var(--reader-letter-spacing);
+            text-wrap: pretty;
+            word-break: break-word;
+        }
+
+        .chapter-text p {
+            margin: 0 0 1.1em;
+            text-align: left;
+        }
+
+        .chapter-text p+p {
+            text-indent: 1.4em;
+        }
+
+        .chapter-text p:last-child {
+            margin-bottom: 0;
         }
 
         .chapter-sidebar {
+            width: min(22rem, 92vw);
             transform: translateX(-100%);
-            transition: transform 0.3s ease;
+            transition: transform 0.28s ease;
         }
 
         .chapter-sidebar.open {
             transform: translateX(0);
         }
 
+        .settings-panel {
+            width: min(22rem, 92vw);
+        }
+
         .reading-progress-bar {
             height: 3px;
             background: linear-gradient(to right, #2563eb 0%, #2563eb var(--progress, 0%), #e5e7eb var(--progress, 0%), #e5e7eb 100%);
             transition: width 0.1s linear;
+        }
+
+        .bottom-nav {
+            transition: transform 0.25s ease, opacity 0.25s ease;
+            padding-bottom: max(env(safe-area-inset-bottom), 0px);
+        }
+
+        .bottom-nav-hidden {
+            transform: translateY(110%);
+            opacity: 0.96;
+        }
+
+        .reading-bg-dark #topToolbar,
+        .reading-bg-dark #bottomNav,
+        .reading-bg-dark #chapterSidebar,
+        .reading-bg-dark #settingsPanel {
+            background-color: #111827 !important;
+            border-color: #374151 !important;
+            color: #e5e7eb;
+        }
+
+        .reading-bg-dark #topToolbar .text-gray-800,
+        .reading-bg-dark #chapterSidebar .text-gray-800,
+        .reading-bg-dark #settingsPanel .text-gray-800 {
+            color: #f3f4f6 !important;
+        }
+
+        .reading-bg-dark #topToolbar .text-gray-600,
+        .reading-bg-dark #chapterSidebar .text-gray-600,
+        .reading-bg-dark #settingsPanel .text-gray-600,
+        .reading-bg-dark #bottomNav .text-gray-600,
+        .reading-bg-dark #topToolbar .text-gray-500,
+        .reading-bg-dark #chapterSidebar .text-gray-500,
+        .reading-bg-dark #settingsPanel .text-gray-500,
+        .reading-bg-dark #bottomNav .text-gray-500 {
+            color: #9ca3af !important;
+        }
+
+        .reading-bg-dark #topToolbar .bg-gray-100,
+        .reading-bg-dark #topToolbar .bg-blue-100,
+        .reading-bg-dark #bottomNav .bg-gray-100,
+        .reading-bg-dark #settingsPanel .bg-gray-100 {
+            background-color: #1f2937 !important;
+            color: #d1d5db !important;
+        }
+
+        .reading-bg-dark #topToolbar .hover\:bg-gray-100:hover,
+        .reading-bg-dark #chapterSidebar .hover\:bg-gray-50:hover,
+        .reading-bg-dark #settingsPanel .hover\:bg-gray-50:hover,
+        .reading-bg-dark #settingsPanel .hover\:bg-gray-200:hover,
+        .reading-bg-dark #bottomNav .hover\:bg-gray-100:hover,
+        .reading-bg-dark #bottomNav .hover\:bg-gray-200:hover {
+            background-color: #1f2937 !important;
+        }
+
+        .reading-bg-dark .chapter-title,
+        .reading-bg-dark .chapter-subtitle {
+            color: #f8fafc !important;
+        }
+
+        .reading-bg-dark .chapter-meta {
+            color: #94a3b8 !important;
+        }
+
+        .reading-bg-dark .chapter-text {
+            color: #e5e7eb;
+        }
+
+        .reading-bg-sepia #topToolbar,
+        .reading-bg-sepia #bottomNav,
+        .reading-bg-sepia #chapterSidebar,
+        .reading-bg-sepia #settingsPanel {
+            background-color: #f8f1e4 !important;
+            border-color: #d9c7a0 !important;
+            color: #5c4f3a;
+        }
+
+        .reading-bg-sepia #topToolbar .text-gray-800,
+        .reading-bg-sepia #chapterSidebar .text-gray-800,
+        .reading-bg-sepia #settingsPanel .text-gray-800 {
+            color: #5c4f3a !important;
+        }
+
+        .reading-bg-sepia #topToolbar .text-gray-600,
+        .reading-bg-sepia #chapterSidebar .text-gray-600,
+        .reading-bg-sepia #settingsPanel .text-gray-600,
+        .reading-bg-sepia #bottomNav .text-gray-600,
+        .reading-bg-sepia #topToolbar .text-gray-500,
+        .reading-bg-sepia #chapterSidebar .text-gray-500,
+        .reading-bg-sepia #settingsPanel .text-gray-500 {
+            color: #7c6a52 !important;
+        }
+
+        .reading-bg-sepia .chapter-title,
+        .reading-bg-sepia .chapter-subtitle {
+            color: #5c4f3a !important;
+        }
+
+        .reading-bg-sepia .chapter-meta {
+            color: #7c6a52 !important;
+        }
+
+        @media (max-width: 640px) {
+            .reader-main {
+                padding-top: 4.45rem;
+                padding-bottom: 5.7rem;
+            }
+
+            .chapter-content {
+                padding: 1rem 0.85rem 1.25rem;
+            }
+
+            .chapter-text p+p {
+                text-indent: 1em;
+            }
         }
     </style>
 </head>
@@ -168,7 +325,7 @@
 
     <!-- Chapter Sidebar -->
     <div class="fixed left-0 top-0 h-full w-80 bg-white shadow-xl z-50 chapter-sidebar" id="chapterSidebar"
-        role="dialog" aria-label="Danh sách chương" aria-modal="true">
+        role="dialog" aria-label="Danh sách chương" aria-modal="true" aria-hidden="true">
         <div class="flex items-center justify-between p-4 border-b border-gray-200">
             <h2 class="font-semibold text-gray-800">Danh sách chương</h2>
             <button class="text-gray-600 hover:text-primary transition-colors p-2 rounded hover:bg-gray-100"
@@ -206,8 +363,8 @@
     </div>
 
     <!-- Settings Panel -->
-    <div class="fixed right-0 top-0 h-full w-80 bg-white shadow-xl z-50 transform translate-x-full transition-transform duration-300"
-        id="settingsPanel" role="dialog" aria-label="Cài đặt đọc truyện" aria-modal="true">
+    <div class="fixed right-0 top-0 h-full w-80 bg-white shadow-xl z-50 transform translate-x-full transition-transform duration-300 settings-panel"
+        id="settingsPanel" role="dialog" aria-label="Cài đặt đọc truyện" aria-modal="true" aria-hidden="true">
         <div class="flex items-center justify-between p-4 border-b border-gray-200">
             <h2 class="font-semibold text-gray-800">Cài đặt đọc truyện</h2>
             <button class="text-gray-600 hover:text-primary transition-colors p-2 rounded hover:bg-gray-100"
@@ -299,20 +456,20 @@
     </div>
 
     <!-- Main Content -->
-    <main class="pt-16 pb-20" role="main">
+    <main class="reader-main" role="main">
         <div class="chapter-content">
             <article class="prose max-w-none story-content">
                 <header class="text-center mb-8">
-                    <h1 class="text-2xl font-bold text-gray-800 mb-2">Chương 1: Khởi Đầu Mới</h1>
-                    <p class="text-gray-600">Ngạo Thế Cửu Trọng Thiên</p>
-                    <div class="mt-4 text-sm text-gray-500 flex items-center justify-center space-x-3">
+                    <h1 class="chapter-title text-2xl font-bold text-gray-800 mb-2">Chương 1: Khởi Đầu Mới</h1>
+                    <p class="chapter-subtitle text-gray-600">Ngạo Thế Cửu Trọng Thiên</p>
+                    <div class="chapter-meta mt-4 text-sm text-gray-500 flex items-center justify-center space-x-3">
                         <span><i class="far fa-clock mr-1" aria-hidden="true"></i>Cập nhật: 2 ngày trước</span>
                         <span>•</span>
                         <span><i class="fas fa-file-alt mr-1" aria-hidden="true"></i>2,847 từ</span>
                     </div>
                 </header>
 
-                <div class="chapter-text space-y-4 text-justify leading-relaxed">
+                <div class="chapter-text">
                     <p>
                         Gió thu se lạnh thổi qua, lá vàng rơi rụng khắp sân. Chu Dương ngồi một mình trong góc vườn,
                         ánh mắt trống rỗng nhìn về phía xa. Hôm nay là ngày sinh nhật lần thứ mười sáu của cậu,
@@ -394,9 +551,10 @@
     </main>
 
     <!-- Bottom Navigation -->
-    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-40">
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-40 bottom-nav"
+        id="bottomNav">
         <div class="flex items-center justify-between px-4 py-3 max-w-4xl mx-auto">
-            <a href="#"
+            <a href="reader.html?chapter=0" id="prevChapterBtn"
                 class="flex items-center space-x-2 px-4 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors">
                 <i class="fas fa-chevron-left" aria-hidden="true"></i>
                 <span class="text-sm font-medium">Chương trước</span>
@@ -417,7 +575,7 @@
                 </button>
             </div>
 
-            <a href="#"
+            <a href="reader.html?chapter=2" id="nextChapterBtn"
                 class="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-700 transition-colors shadow-md">
                 <span class="text-sm font-medium">Chương tiếp</span>
                 <i class="fas fa-chevron-right" aria-hidden="true"></i>
@@ -429,201 +587,256 @@
     <div class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden" id="overlay" aria-hidden="true"></div>
 
     <script>
-        // Reading functionality
-        document.addEventListener('DOMContentLoaded', function () {
-            // Theme switching
-            const themeBtns = document.querySelectorAll('.theme-btn');
+        document.addEventListener('DOMContentLoaded', () => {
             const body = document.body;
+            const themeBtns = Array.from(document.querySelectorAll('.theme-btn'));
+            const fontSizeBtns = Array.from(document.querySelectorAll('.font-size-btn'));
 
-            themeBtns.forEach(btn => {
-                btn.addEventListener('click', function () {
-                    const theme = this.dataset.theme;
-
-                    // Remove all theme classes
-                    body.classList.remove('reading-bg-light', 'reading-bg-dark', 'reading-bg-sepia');
-
-                    // Add selected theme
-                    body.classList.add(`reading-bg-${theme}`);
-
-                    // Update button states
-                    themeBtns.forEach(b => {
-                        b.classList.remove('border-primary');
-                        b.setAttribute('aria-checked', 'false');
-                    });
-                    this.classList.add('border-primary');
-                    this.setAttribute('aria-checked', 'true');
-
-                    localStorage.setItem('reading-theme', theme);
-                });
-            });
-
-            // Font size switching
-            const fontSizeBtns = document.querySelectorAll('.font-size-btn');
-
-            fontSizeBtns.forEach(btn => {
-                btn.addEventListener('click', function () {
-                    const size = this.dataset.size;
-
-                    // Remove all font size classes
-                    body.classList.remove('font-size-small', 'font-size-medium', 'font-size-large', 'font-size-xlarge');
-
-                    // Add selected size
-                    body.classList.add(`font-size-${size}`);
-
-                    // Update button states
-                    fontSizeBtns.forEach(b => {
-                        b.classList.remove('border-primary', 'text-primary', 'border-2', 'font-semibold');
-                        b.classList.add('border-gray-200');
-                        b.setAttribute('aria-checked', 'false');
-                    });
-                    this.classList.add('border-primary', 'text-primary', 'border-2', 'font-semibold');
-                    this.classList.remove('border-gray-200');
-                    this.setAttribute('aria-checked', 'true');
-
-                    localStorage.setItem('font-size', size);
-                });
-            });
-
-            // Sidebar and settings panel
             const chapterListBtn = document.getElementById('chapterListBtn');
             const settingsBtn = document.getElementById('settingsBtn');
             const chapterSidebar = document.getElementById('chapterSidebar');
             const settingsPanel = document.getElementById('settingsPanel');
             const overlay = document.getElementById('overlay');
-            const closeSidebar = document.getElementById('closeSidebar');
-            const closeSettings = document.getElementById('closeSettings');
+            const closeSidebarBtn = document.getElementById('closeSidebar');
+            const closeSettingsBtn = document.getElementById('closeSettings');
+            const topToolbar = document.getElementById('topToolbar');
+            const bottomNav = document.getElementById('bottomNav');
+            const progressBar = document.querySelector('.reading-progress-bar');
+            const progressText = document.getElementById('progressText');
+            const prevChapterBtn = document.getElementById('prevChapterBtn');
+            const nextChapterBtn = document.getElementById('nextChapterBtn');
+            const autoScrollToggle = document.getElementById('autoScrollToggle');
+            const scrollSpeed = document.getElementById('scrollSpeed');
+
+            let autoScrollInterval = null;
+            let lastScrollTop = window.scrollY || window.pageYOffset;
+            let ticking = false;
+
+            function setTheme(theme) {
+                const allowedTheme = ['light', 'dark', 'sepia'].includes(theme) ? theme : 'light';
+                body.classList.remove('reading-bg-light', 'reading-bg-dark', 'reading-bg-sepia');
+                body.classList.add(`reading-bg-${allowedTheme}`);
+
+                themeBtns.forEach((btn) => {
+                    const isActive = btn.dataset.theme === allowedTheme;
+                    btn.classList.toggle('border-primary', isActive);
+                    btn.classList.toggle('border-gray-200', !isActive);
+                    btn.setAttribute('aria-checked', String(isActive));
+                });
+
+                localStorage.setItem('reading-theme', allowedTheme);
+            }
+
+            function setFontSize(size) {
+                const allowedSize = ['small', 'medium', 'large', 'xlarge'].includes(size) ? size : 'medium';
+                body.classList.remove('font-size-small', 'font-size-medium', 'font-size-large', 'font-size-xlarge');
+                body.classList.add(`font-size-${allowedSize}`);
+
+                fontSizeBtns.forEach((btn) => {
+                    const isActive = btn.dataset.size === allowedSize;
+                    btn.classList.toggle('border-primary', isActive);
+                    btn.classList.toggle('text-primary', isActive);
+                    btn.classList.toggle('border-2', isActive);
+                    btn.classList.toggle('font-semibold', isActive);
+                    btn.classList.toggle('border-gray-200', !isActive);
+                    btn.setAttribute('aria-checked', String(isActive));
+                });
+
+                localStorage.setItem('font-size', allowedSize);
+            }
+
+            function syncOverlayState() {
+                const isSidebarOpen = chapterSidebar.classList.contains('open');
+                const isSettingsOpen = !settingsPanel.classList.contains('translate-x-full');
+                const hasPanelOpen = isSidebarOpen || isSettingsOpen;
+
+                overlay.classList.toggle('hidden', !hasPanelOpen);
+                body.style.overflow = hasPanelOpen ? 'hidden' : '';
+
+                if (hasPanelOpen && topToolbar && bottomNav) {
+                    topToolbar.classList.remove('toolbar-hidden');
+                    topToolbar.classList.add('toolbar-visible');
+                    bottomNav.classList.remove('bottom-nav-hidden');
+                }
+            }
 
             function openSidebar() {
                 chapterSidebar.classList.add('open');
-                overlay.classList.remove('hidden');
                 chapterSidebar.setAttribute('aria-hidden', 'false');
+                syncOverlayState();
             }
 
-            function closeSidebarFunc() {
+            function closeSidebar() {
                 chapterSidebar.classList.remove('open');
-                if (!settingsPanel.classList.contains('translate-x-0')) { // Check if settings is also open (unlikely but safe)
-                    overlay.classList.add('hidden');
-                }
                 chapterSidebar.setAttribute('aria-hidden', 'true');
+                syncOverlayState();
             }
 
             function openSettings() {
                 settingsPanel.classList.remove('translate-x-full');
-                overlay.classList.remove('hidden');
                 settingsPanel.setAttribute('aria-hidden', 'false');
+                syncOverlayState();
             }
 
-            function closeSettingsFunc() {
+            function closeSettings() {
                 settingsPanel.classList.add('translate-x-full');
-                if (!chapterSidebar.classList.contains('open')) {
-                    overlay.classList.add('hidden');
-                }
                 settingsPanel.setAttribute('aria-hidden', 'true');
+                syncOverlayState();
             }
 
-            chapterListBtn.addEventListener('click', openSidebar);
-            settingsBtn.addEventListener('click', openSettings);
-            closeSidebar.addEventListener('click', closeSidebarFunc);
-            closeSettings.addEventListener('click', closeSettingsFunc);
-
-            overlay.addEventListener('click', function () {
-                closeSidebarFunc();
-                closeSettingsFunc();
-            });
-
-            // Auto scroll
-            let autoScrollInterval;
-            const autoScrollToggle = document.getElementById('autoScrollToggle');
-            const scrollSpeed = document.getElementById('scrollSpeed');
-
-            autoScrollToggle.addEventListener('change', function () {
-                if (this.checked) {
-                    startAutoScroll();
-                } else {
-                    stopAutoScroll();
+            function stopAutoScroll() {
+                if (autoScrollInterval) {
+                    clearInterval(autoScrollInterval);
+                    autoScrollInterval = null;
                 }
-            });
-
-            scrollSpeed.addEventListener('input', function () {
-                if (autoScrollToggle.checked) {
-                    stopAutoScroll();
-                    startAutoScroll();
-                }
-            });
+            }
 
             function startAutoScroll() {
-                const speed = parseInt(scrollSpeed.value);
-                const interval = 50 - (speed * 4); // Faster updates for smoother scroll
-                const step = 1;
+                const speed = parseInt(scrollSpeed.value, 10) || 3;
+                const interval = Math.max(12, 52 - (speed * 4));
+                const step = Math.max(1, Math.round(speed / 2));
 
+                stopAutoScroll();
                 autoScrollInterval = setInterval(() => {
-                    window.scrollBy(0, step);
-                    // Check if reached bottom
-                    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+                    window.scrollBy({ top: step, behavior: 'auto' });
+
+                    if ((window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 2)) {
                         stopAutoScroll();
                         autoScrollToggle.checked = false;
                     }
                 }, interval);
             }
 
-            function stopAutoScroll() {
-                if (autoScrollInterval) {
-                    clearInterval(autoScrollInterval);
-                }
-            }
-
-            // Reading progress
             function updateProgress() {
                 const winHeight = window.innerHeight;
                 const docHeight = document.documentElement.scrollHeight - winHeight;
-                const scrollTop = window.pageYOffset;
-                const progress = Math.min(100, Math.max(0, (scrollTop / docHeight) * 100));
+                const scrollTop = window.scrollY || window.pageYOffset;
+                const progress = docHeight <= 0
+                    ? 100
+                    : Math.min(100, Math.max(0, (scrollTop / docHeight) * 100));
 
-                document.querySelector('.reading-progress-bar').style.setProperty('--progress', `${progress}%`);
+                if (progressBar) {
+                    progressBar.style.setProperty('--progress', `${progress}%`);
+                }
 
-                const progressText = document.getElementById('progressText');
                 if (progressText) {
                     progressText.textContent = `${Math.round(progress)}% hoàn thành`;
                 }
             }
 
-            window.addEventListener('scroll', () => {
-                requestAnimationFrame(updateProgress);
+            function updateChromeVisibility() {
+                if (!topToolbar || !bottomNav) {
+                    return;
+                }
+
+                const currentScrollTop = window.scrollY || window.pageYOffset;
+                const scrollDelta = currentScrollTop - lastScrollTop;
+                const hasPanelOpen = !overlay.classList.contains('hidden');
+                const shouldHide = !hasPanelOpen && currentScrollTop > 120 && scrollDelta > 8;
+                const shouldShow = hasPanelOpen || currentScrollTop < 80 || scrollDelta < -8;
+
+                if (shouldHide) {
+                    topToolbar.classList.remove('toolbar-visible');
+                    topToolbar.classList.add('toolbar-hidden');
+                    bottomNav.classList.add('bottom-nav-hidden');
+                } else if (shouldShow) {
+                    topToolbar.classList.remove('toolbar-hidden');
+                    topToolbar.classList.add('toolbar-visible');
+                    bottomNav.classList.remove('bottom-nav-hidden');
+                }
+
+                lastScrollTop = currentScrollTop;
+            }
+
+            function onScroll() {
+                if (ticking) {
+                    return;
+                }
+
+                ticking = true;
+                requestAnimationFrame(() => {
+                    updateProgress();
+                    updateChromeVisibility();
+                    ticking = false;
+                });
+            }
+
+            themeBtns.forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    setTheme(btn.dataset.theme || 'light');
+                });
             });
 
-            // Keyboard shortcuts
-            document.addEventListener('keydown', function (e) {
-                switch (e.key) {
+            fontSizeBtns.forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    setFontSize(btn.dataset.size || 'medium');
+                });
+            });
+
+            chapterListBtn.addEventListener('click', openSidebar);
+            settingsBtn.addEventListener('click', openSettings);
+            closeSidebarBtn.addEventListener('click', closeSidebar);
+            closeSettingsBtn.addEventListener('click', closeSettings);
+
+            overlay.addEventListener('click', () => {
+                closeSidebar();
+                closeSettings();
+            });
+
+            autoScrollToggle.addEventListener('change', () => {
+                if (autoScrollToggle.checked) {
+                    startAutoScroll();
+                } else {
+                    stopAutoScroll();
+                }
+            });
+
+            scrollSpeed.addEventListener('input', () => {
+                if (autoScrollToggle.checked) {
+                    startAutoScroll();
+                }
+            });
+
+            window.addEventListener('scroll', onScroll, { passive: true });
+            window.addEventListener('resize', updateProgress);
+
+            document.addEventListener('keydown', (event) => {
+                const isTyping = event.target.tagName === 'INPUT'
+                    || event.target.tagName === 'TEXTAREA'
+                    || event.target.tagName === 'SELECT';
+                const hasPanelOpen = !overlay.classList.contains('hidden');
+
+                switch (event.key) {
                     case 'ArrowLeft':
-                        // Previous chapter logic here
+                        if (!isTyping && !hasPanelOpen && prevChapterBtn) {
+                            event.preventDefault();
+                            window.location.href = prevChapterBtn.href;
+                        }
                         break;
                     case 'ArrowRight':
-                        // Next chapter logic here
+                        if (!isTyping && !hasPanelOpen && nextChapterBtn) {
+                            event.preventDefault();
+                            window.location.href = nextChapterBtn.href;
+                        }
                         break;
                     case ' ':
-                        // Toggle auto scroll if not in an input
-                        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-                            e.preventDefault();
+                        if (!isTyping) {
+                            event.preventDefault();
                             autoScrollToggle.checked = !autoScrollToggle.checked;
                             autoScrollToggle.dispatchEvent(new Event('change'));
                         }
                         break;
                     case 'Escape':
-                        closeSidebarFunc();
-                        closeSettingsFunc();
+                        closeSidebar();
+                        closeSettings();
                         break;
                 }
             });
 
-            // Load saved preferences
-            const savedTheme = localStorage.getItem('reading-theme') || 'light';
-            const savedFontSize = localStorage.getItem('font-size') || 'medium';
-
-            const themeBtn = document.querySelector(`[data-theme="${savedTheme}"]`);
-            if (themeBtn) themeBtn.click();
-
-            const fontSizeBtn = document.querySelector(`[data-size="${savedFontSize}"]`);
-            if (fontSizeBtn) fontSizeBtn.click();
+            setTheme(localStorage.getItem('reading-theme') || 'light');
+            setFontSize(localStorage.getItem('font-size') || 'medium');
+            updateProgress();
+            updateChromeVisibility();
         });
     </script>
     <script src="enhanced-script.js"></script>

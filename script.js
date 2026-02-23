@@ -1,384 +1,563 @@
-// MangaStorm Template JavaScript - Mobile Optimized
+// Shared UI logic for TruyenStorm templates
 
-document.addEventListener('DOMContentLoaded', function () {
-    console.log('MangaStorm template loaded successfully!');
+const STORAGE_KEYS = {
+    readingHistory: 'readingHistory',
+    theme: 'ts-theme'
+};
 
-    // Initialize all functionality
+const FALLBACK_SEARCH_TERMS = [
+    'Ngạo Thế',
+    'Đấu Phá',
+    'Hoàn Mỹ',
+    'Tu Tiên',
+    'Kiếm Hiệp',
+    'Ngôn Tình'
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+    initializeTheme();
+    initializeMobileMenu();
     initializeSearch();
-    initializeMangaCards();
+    initializeSmoothScrolling();
+    initializePlaceholderLinks();
+    initializeBackToTop();
+    initializeStoryCards();
+    initializeRankingTabs();
     initializeReadingHistory();
     initializeAdvancedFilters();
-    initializeMobileMenu();
-    initializeThemeToggle();
-    // Native lazy loading is used in HTML, so custom initialization is not needed
+    initializeCounters();
     initializeScrollBehavior();
+    registerServiceWorker();
 });
 
-// Enhanced mobile menu functionality
 function initializeMobileMenu() {
     const mobileMenuBtn = document.getElementById('mobile-menu-button');
     const mobileMenu = document.getElementById('mobile-menu');
 
-    if (mobileMenuBtn && mobileMenu) {
-        mobileMenuBtn.addEventListener('click', function () {
-            const isOpen = !mobileMenu.classList.contains('hidden');
-
-            if (isOpen) {
-                closeMobileMenu();
-            } else {
-                openMobileMenu();
-            }
-        });
-
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', function (e) {
-            if (!mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
-                closeMobileMenu();
-            }
-        });
-
-        // Close mobile menu on window resize if viewport becomes large
-        window.addEventListener('resize', function () {
-            if (window.innerWidth >= 1024) { // lg breakpoint
-                closeMobileMenu();
-            }
-        });
+    if (!mobileMenuBtn || !mobileMenu) {
+        return;
     }
+
+    const setMenuState = (open) => {
+        mobileMenu.classList.toggle('hidden', !open);
+        mobileMenuBtn.setAttribute('aria-expanded', String(open));
+        mobileMenu.setAttribute('aria-hidden', String(!open));
+        mobileMenuBtn.innerHTML = open
+            ? '<i class="fas fa-times text-xl"></i>'
+            : '<i class="fas fa-bars text-xl"></i>';
+
+        // Keep body scroll lock only for mobile menu on small viewports.
+        document.body.style.overflow = open && window.innerWidth < 1024 ? 'hidden' : '';
+    };
+
+    setMenuState(false);
+
+    mobileMenuBtn.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const isOpen = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
+        setMenuState(!isOpen);
+    });
+
+    mobileMenu.addEventListener('click', (event) => {
+        const targetLink = event.target.closest('a');
+        if (targetLink) {
+            setMenuState(false);
+        }
+    });
+
+    document.addEventListener('click', (event) => {
+        const isOpen = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
+        if (!isOpen) {
+            return;
+        }
+
+        if (!mobileMenuBtn.contains(event.target) && !mobileMenu.contains(event.target)) {
+            setMenuState(false);
+        }
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            setMenuState(false);
+        }
+    });
+
+    window.addEventListener('resize', throttle(() => {
+        if (window.innerWidth >= 1024) {
+            setMenuState(false);
+        }
+    }, 150));
 }
 
-function openMobileMenu() {
-    const mobileMenu = document.getElementById('mobile-menu');
-    const mobileMenuBtn = document.getElementById('mobile-menu-button');
-
-    if (mobileMenu && mobileMenuBtn) {
-        mobileMenu.classList.remove('hidden');
-        mobileMenuBtn.innerHTML = '<i class="fas fa-times text-xl"></i>';
-        mobileMenuBtn.setAttribute('aria-expanded', 'true');
-
-        // Prevent body scroll when menu is open
-        document.body.style.overflow = 'hidden';
-    }
-}
-
-function closeMobileMenu() {
-    const mobileMenu = document.getElementById('mobile-menu');
-    const mobileMenuBtn = document.getElementById('mobile-menu-button');
-
-    if (mobileMenu && mobileMenuBtn) {
-        mobileMenu.classList.add('hidden');
-        mobileMenuBtn.innerHTML = '<i class="fas fa-bars text-xl"></i>';
-        mobileMenuBtn.setAttribute('aria-expanded', 'false');
-
-        // Restore body scroll
-        document.body.style.overflow = '';
-    }
-}
-
-// Enhanced search functionality with mobile support
 function initializeSearch() {
     const searchInputs = document.querySelectorAll('input[type="search"]');
-    const searchButtons = document.querySelectorAll('.fa-search');
+    if (searchInputs.length === 0) {
+        return;
+    }
 
-    searchInputs.forEach((searchInput, index) => {
-        // Find associated button (often sibling or parent's sibling)
-        const searchButton = searchInput.parentElement.querySelector('button');
+    const allTerms = collectSearchTerms();
 
-        if (searchInput) {
-            // Search on Enter key
-            searchInput.addEventListener('keypress', function (e) {
-                if (e.key === 'Enter') {
-                    performSearch(searchInput.value);
-                }
-            });
+    searchInputs.forEach((input) => {
+        const searchButton = input.parentElement ? input.parentElement.querySelector('button') : null;
+        const suggestions = ensureSuggestionContainer(input);
 
-            // Search on button click
-            if (searchButton) {
-                searchButton.addEventListener('click', function () {
-                    performSearch(searchInput.value);
-                });
+        input.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                performSearch(input.value);
             }
+        });
 
-            // Auto-suggest functionality with debouncing
-            let searchTimeout;
-            searchInput.addEventListener('input', function () {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    if (this.value.length > 2) {
-                        showSearchSuggestions(this.value);
-                    } else {
-                        hideSearchSuggestions();
-                    }
-                }, 300);
-            });
-
-            // Handle focus and blur for mobile
-            searchInput.addEventListener('focus', function () {
-                this.parentElement.classList.add('ring-2', 'ring-primary');
-            });
-
-            searchInput.addEventListener('blur', function () {
-                this.parentElement.classList.remove('ring-2', 'ring-primary');
-                // Hide suggestions after a delay to allow click
-                setTimeout(hideSearchSuggestions, 200);
+        if (searchButton) {
+            searchButton.addEventListener('click', () => {
+                performSearch(input.value);
             });
         }
+
+        let searchTimeout;
+        input.addEventListener('input', (event) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                renderSearchSuggestions(event.target.value, suggestions, allTerms);
+            }, 180);
+        });
+
+        input.addEventListener('focus', () => {
+            if (input.parentElement) {
+                input.parentElement.classList.add('ring-2', 'ring-blue-300');
+            }
+            renderSearchSuggestions(input.value, suggestions, allTerms);
+        });
+
+        input.addEventListener('blur', () => {
+            if (input.parentElement) {
+                input.parentElement.classList.remove('ring-2', 'ring-blue-300');
+            }
+            setTimeout(() => {
+                suggestions.classList.add('hidden');
+            }, 140);
+        });
+    });
+}
+
+function collectSearchTerms() {
+    const terms = new Set(FALLBACK_SEARCH_TERMS);
+
+    document.querySelectorAll('.trending-keyword').forEach((el) => {
+        const text = (el.textContent || '').trim();
+        if (text) {
+            terms.add(text);
+        }
+    });
+
+    const history = JSON.parse(localStorage.getItem(STORAGE_KEYS.readingHistory) || '[]');
+    history.forEach((item) => {
+        if (item && item.title) {
+            terms.add(item.title);
+        }
+    });
+
+    return Array.from(terms);
+}
+
+function ensureSuggestionContainer(input) {
+    if (input.parentElement && input.parentElement.querySelector('.search-suggestions')) {
+        return input.parentElement.querySelector('.search-suggestions');
+    }
+
+    const suggestions = document.createElement('div');
+    suggestions.className = 'search-suggestions hidden';
+    suggestions.setAttribute('role', 'listbox');
+
+    if (input.parentElement) {
+        input.parentElement.classList.add('relative');
+        input.parentElement.appendChild(suggestions);
+    }
+
+    return suggestions;
+}
+
+function renderSearchSuggestions(query, container, allTerms) {
+    const normalizedQuery = (query || '').trim().toLowerCase();
+
+    if (!normalizedQuery || normalizedQuery.length < 2) {
+        container.classList.add('hidden');
+        container.innerHTML = '';
+        return;
+    }
+
+    const matches = allTerms
+        .filter((term) => term.toLowerCase().includes(normalizedQuery))
+        .slice(0, 6);
+
+    if (matches.length === 0) {
+        container.classList.add('hidden');
+        container.innerHTML = '';
+        return;
+    }
+
+    container.innerHTML = matches.map((term) => (
+        `<button type="button" class="search-suggestion-item" data-term="${escapeHtml(term)}">${escapeHtml(term)}</button>`
+    )).join('');
+
+    container.classList.remove('hidden');
+
+    container.querySelectorAll('.search-suggestion-item').forEach((button) => {
+        button.addEventListener('mousedown', (event) => {
+            event.preventDefault();
+            performSearch(button.dataset.term || '');
+        });
     });
 }
 
 function performSearch(query) {
-    if (query && query.trim().length > 0) {
-        console.log('Searching for:', query);
-        // Redirect to search page
-        window.location.href = `search.html?q=${encodeURIComponent(query)}`;
+    const normalized = (query || '').trim();
+    if (!normalized) {
+        return;
     }
+
+    window.location.href = `search.html?q=${encodeURIComponent(normalized)}`;
 }
 
-function showSearchSuggestions(query) {
-    // Placeholder for suggestion logic
-    console.log('Show suggestions for:', query);
-}
-
-function hideSearchSuggestions() {
-    // Placeholder for hiding suggestions
-}
-
-// Scroll behavior for mobile optimization
 function initializeScrollBehavior() {
-    let lastScrollTop = 0;
     const header = document.querySelector('header');
-
-    // Hide header on scroll down, show on scroll up (mobile)
-    if (header && window.innerWidth <= 768) {
-        window.addEventListener('scroll', function () {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-            if (scrollTop > lastScrollTop && scrollTop > 100) {
-                // Scrolling down
-                header.style.transform = 'translateY(-100%)';
-                header.style.transition = 'transform 0.3s ease-in-out';
-            } else {
-                // Scrolling up
-                header.style.transform = 'translateY(0)';
-            }
-
-            lastScrollTop = scrollTop;
-        }, { passive: true });
+    if (!header) {
+        return;
     }
 
-    // Smooth scroll for anchor links
-    initializeSmoothScrolling();
-}
+    let lastScrollTop = window.scrollY;
 
-// Enhanced manga cards with touch support
-function initializeMangaCards() {
-    const mangaCards = document.querySelectorAll('.story-card');
-
-    mangaCards.forEach(card => {
-        // Enhanced click/touch handler
-        const link = card.querySelector('a');
-        if (link) {
-            card.style.cursor = 'pointer';
-            card.addEventListener('click', function (e) {
-                // Don't trigger if clicking specific interactive elements
-                if (!e.target.closest('a') && !e.target.closest('button')) {
-                    link.click();
-                }
-            });
+    window.addEventListener('scroll', throttle(() => {
+        if (window.innerWidth > 768) {
+            header.style.transform = '';
+            return;
         }
 
-        // Touch-friendly hover effects
+        const current = window.scrollY;
+        const delta = current - lastScrollTop;
+
+        if (current > 100 && delta > 8) {
+            header.style.transform = 'translateY(-100%)';
+            header.style.transition = 'transform 0.25s ease';
+        } else if (delta < -8) {
+            header.style.transform = 'translateY(0)';
+        }
+
+        lastScrollTop = current;
+    }, 100), { passive: true });
+}
+
+function initializeStoryCards() {
+    const storyCards = document.querySelectorAll('.story-card');
+
+    storyCards.forEach((card) => {
         if ('ontouchstart' in window) {
-            card.addEventListener('touchstart', function () {
-                this.classList.add('touch-active');
-            });
+            card.addEventListener('touchstart', () => {
+                card.classList.add('touch-active');
+            }, { passive: true });
 
-            card.addEventListener('touchend', function () {
-                this.classList.remove('touch-active');
-            });
-        } else {
-            // Mouse hover effects for desktop
-            card.addEventListener('mouseenter', function () {
-                this.style.transform = 'translateY(-5px)';
-                this.style.transition = 'transform 0.3s ease';
-            });
-
-            card.addEventListener('mouseleave', function () {
-                this.style.transform = 'translateY(0)';
+            card.addEventListener('touchend', () => {
+                card.classList.remove('touch-active');
             });
         }
     });
 }
 
-// Reading history functionality
+function initializeRankingTabs() {
+    const tablists = document.querySelectorAll('.rank-tabs[role="tablist"]');
+    if (tablists.length === 0) {
+        return;
+    }
+
+    const activateTab = (tab, focusTarget = false) => {
+        const tablist = tab.closest('[role="tablist"]');
+        if (!tablist) {
+            return;
+        }
+
+        const tabs = Array.from(tablist.querySelectorAll('.rank-tab[role="tab"]'));
+        const container = tablist.parentElement;
+        if (!container || tabs.length === 0) {
+            return;
+        }
+
+        tabs.forEach((candidate) => {
+            const isActive = candidate === tab;
+            candidate.classList.toggle('is-active', isActive);
+            candidate.setAttribute('aria-selected', String(isActive));
+            candidate.tabIndex = isActive ? 0 : -1;
+        });
+
+        const activePanelId = tab.getAttribute('aria-controls');
+        container.querySelectorAll('.rank-panel[role="tabpanel"]').forEach((panel) => {
+            panel.classList.toggle('hidden', panel.id !== activePanelId);
+        });
+
+        if (focusTarget) {
+            tab.focus();
+        }
+    };
+
+    tablists.forEach((tablist) => {
+        const tabs = Array.from(tablist.querySelectorAll('.rank-tab[role="tab"]'));
+        tabs.forEach((tab, index) => {
+            tab.addEventListener('click', () => {
+                activateTab(tab);
+            });
+
+            tab.addEventListener('keydown', (event) => {
+                if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') {
+                    return;
+                }
+
+                event.preventDefault();
+                const direction = event.key === 'ArrowRight' ? 1 : -1;
+                const nextIndex = (index + direction + tabs.length) % tabs.length;
+                activateTab(tabs[nextIndex], true);
+            });
+        });
+
+        const activeTab = tablist.querySelector('.rank-tab.is-active') || tabs[0];
+        if (activeTab) {
+            activateTab(activeTab);
+        }
+    });
+}
+
 function initializeReadingHistory() {
-    // 1. Handle saving history (would normally happen on reader.html)
-    // For demo purposes, we'll just check if we're on the reader page (mock check)
     const isReaderPage = window.location.pathname.includes('reader.html');
     if (isReaderPage) {
-        // Mock saving current story
         const currentStory = {
-            id: 'story-' + Math.floor(Math.random() * 1000),
-            title: document.title.split('-')[0].trim() || 'Truyện Đang Đọc',
-            chapter: 'Chương ' + (Math.floor(Math.random() * 100) + 1),
+            id: getStoryIdFromUrl(),
+            title: document.title.split('-')[0].trim() || 'Truyện đang đọc',
+            chapter: `Chương ${new URLSearchParams(window.location.search).get('chapter') || '1'}`,
             url: window.location.href,
-            image: 'https://picsum.photos/80/120?random=' + Math.floor(Math.random() * 100),
+            image: 'https://picsum.photos/80/120?random=' + Math.floor(Math.random() * 500),
             timestamp: Date.now()
         };
         saveReadingHistory(currentStory);
     }
 
-    // 2. Handle displaying history (on index.html)
     const historySection = document.getElementById('reading-history-section');
     const historyList = document.getElementById('reading-history-list');
     const clearBtn = document.getElementById('clear-history-btn');
 
-    if (historySection && historyList) {
-        loadReadingHistory(historySection, historyList);
+    if (!historySection || !historyList) {
+        return;
+    }
 
-        if (clearBtn) {
-            clearBtn.addEventListener('click', () => {
-                if (confirm('Bạn có chắc muốn xóa toàn bộ lịch sử đọc truyện?')) {
-                    localStorage.removeItem('readingHistory');
-                    historySection.classList.add('hidden');
-                    showNotification('Đã xóa lịch sử đọc truyện', 'success');
-                }
-            });
-        }
+    loadReadingHistory(historySection, historyList);
+
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            if (confirm('Bạn có chắc muốn xóa toàn bộ lịch sử đọc truyện?')) {
+                localStorage.removeItem(STORAGE_KEYS.readingHistory);
+                historySection.classList.add('hidden');
+                historyList.innerHTML = '';
+                showNotification('Đã xóa lịch sử đọc truyện', 'success');
+            }
+        });
     }
 }
 
 function saveReadingHistory(story) {
-    let history = JSON.parse(localStorage.getItem('readingHistory') || '[]');
+    if (!story || !story.title) {
+        return;
+    }
 
-    // Remove existing entry for this story if exists
-    history = history.filter(item => item.title !== story.title);
-
-    // Add new entry to top
+    let history = JSON.parse(localStorage.getItem(STORAGE_KEYS.readingHistory) || '[]');
+    history = history.filter((item) => item.title !== story.title);
     history.unshift(story);
 
-    // Limit to 6 items
     if (history.length > 6) {
         history = history.slice(0, 6);
     }
 
-    localStorage.setItem('readingHistory', JSON.stringify(history));
+    localStorage.setItem(STORAGE_KEYS.readingHistory, JSON.stringify(history));
 }
 
 function loadReadingHistory(section, list) {
-    let history = JSON.parse(localStorage.getItem('readingHistory') || '[]');
+    const history = JSON.parse(localStorage.getItem(STORAGE_KEYS.readingHistory) || '[]');
 
-    // MOCK DATA SEEDING (For demo if empty)
     if (history.length === 0) {
-        history = [
-            {
-                title: 'Đại Quản Gia Là Ma Hoàng',
-                chapter: 'Chương 256',
-                url: 'story-detail.html',
-                image: 'https://picsum.photos/80/120?random=1',
-                timestamp: Date.now()
-            },
-            {
-                title: 'Võ Luyện Đỉnh Phong',
-                chapter: 'Chương 1024',
-                url: 'story-detail.html',
-                image: 'https://picsum.photos/80/120?random=2',
-                timestamp: Date.now() - 10000
-            },
-            {
-                title: 'Nguyên Tôn',
-                chapter: 'Chương 50',
-                url: 'story-detail.html',
-                image: 'https://picsum.photos/80/120?random=3',
-                timestamp: Date.now() - 20000
-            }
-        ];
-        localStorage.setItem('readingHistory', JSON.stringify(history));
+        section.classList.add('hidden');
+        list.innerHTML = '';
+        return;
     }
 
-    if (history.length > 0) {
-        section.classList.remove('hidden');
-        list.innerHTML = history.map(item => `
-            <div class="bg-white rounded-lg p-3 shadow-sm border border-gray-100 flex items-center space-x-3 hover:shadow-md transition-shadow">
-                <img src="${item.image}" alt="${item.title}" class="w-12 h-16 object-cover rounded shadow-sm" loading="lazy">
-                <div class="flex-1 min-w-0">
-                    <h3 class="font-bold text-gray-800 text-sm truncate">
-                        <a href="${item.url}" class="hover:text-primary transition-colors">${item.title}</a>
-                    </h3>
-                    <div class="flex items-center justify-between mt-1">
-                        <span class="text-xs text-gray-500 truncate">${item.chapter}</span>
-                        <a href="${item.url}" class="text-xs text-primary font-medium hover:underline">Đọc tiếp</a>
-                    </div>
+    section.classList.remove('hidden');
+    list.innerHTML = history.map((item) => `
+        <div class="bg-white rounded-lg p-3 shadow-sm border border-gray-100 flex items-center space-x-3 hover:shadow-md transition-shadow">
+            <img src="${escapeHtml(item.image || '')}" alt="${escapeHtml(item.title)}" class="w-12 h-16 object-cover rounded shadow-sm" loading="lazy">
+            <div class="flex-1 min-w-0">
+                <h3 class="font-bold text-gray-800 text-sm truncate">
+                    <a href="${escapeHtml(item.url || 'story-detail.html')}" class="hover:text-primary transition-colors">${escapeHtml(item.title)}</a>
+                </h3>
+                <div class="flex items-center justify-between mt-1">
+                    <span class="text-xs text-gray-500 truncate">${escapeHtml(item.chapter || '')}</span>
+                    <a href="${escapeHtml(item.url || 'story-detail.html')}" class="text-xs text-primary font-medium hover:underline">Đọc tiếp</a>
                 </div>
             </div>
-        `).join('');
-    } else {
-        section.classList.add('hidden');
-    }
+        </div>
+    `).join('');
 }
 
-// Theme toggle functionality
-function initializeThemeToggle() {
-    // Only add if not already present
-    if (document.getElementById('theme-toggle-btn')) return;
+function initializeTheme() {
+    const toggles = document.querySelectorAll('#theme-toggle, #theme-toggle-btn');
+    const preferredTheme = getPreferredTheme();
+    applyTheme(preferredTheme, false);
 
-    // Create theme toggle button
-    const themeToggle = document.createElement('button');
-    themeToggle.id = 'theme-toggle-btn';
-    themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
-    themeToggle.className = 'text-gray-600 hover:text-primary ml-4 transition-colors';
-    themeToggle.setAttribute('aria-label', 'Chuyển đổi chế độ sáng/tối');
-    themeToggle.addEventListener('click', toggleTheme);
-
-    // Append to the right-side actions container
-    const headerRight = document.querySelector('header .flex.items-center.space-x-4');
-    if (headerRight) {
-        // Insert before the mobile menu button
-        const mobileMenuBtn = document.getElementById('mobile-menu-button');
-        if (mobileMenuBtn) {
-            headerRight.insertBefore(themeToggle, mobileMenuBtn);
-        } else {
-            headerRight.appendChild(themeToggle);
-        }
+    if (toggles.length === 0) {
+        return;
     }
+
+    toggles.forEach((toggle) => {
+        toggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            applyTheme(nextTheme, true);
+        });
+    });
 }
 
-function toggleTheme() {
-    document.body.classList.toggle('dark-mode');
-    const isDark = document.body.classList.contains('dark-mode');
+function getPreferredTheme() {
+    const savedTheme = localStorage.getItem(STORAGE_KEYS.theme);
+    if (savedTheme === 'dark' || savedTheme === 'light') {
+        return savedTheme;
+    }
 
-    // Save theme preference
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
 
-    // Update toggle icon
-    const toggleBtns = document.querySelectorAll('#theme-toggle-btn i, .fa-moon, .fa-sun');
-    toggleBtns.forEach(icon => {
-        if (icon.parentElement.id === 'theme-toggle-btn') {
-            icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-        }
+function applyTheme(theme, announce) {
+    const isDark = theme === 'dark';
+
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    document.body.classList.toggle('dark-mode', isDark);
+    localStorage.setItem(STORAGE_KEYS.theme, isDark ? 'dark' : 'light');
+
+    document.querySelectorAll('#theme-toggle i, #theme-toggle-btn i').forEach((icon) => {
+        icon.className = isDark ? 'fas fa-sun text-gray-100' : 'fas fa-moon text-gray-600';
     });
 
-    showNotification(`Đã chuyển sang chế độ ${isDark ? 'tối' : 'sáng'}`, 'info');
-}
-
-// Load saved theme
-function loadTheme() {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-        document.body.classList.add('dark-mode');
-        // Update icon if it exists immediately
-        const toggleBtn = document.querySelector('#theme-toggle-btn i');
-        if (toggleBtn) {
-            toggleBtn.className = 'fas fa-sun';
-        }
+    if (announce) {
+        showNotification(`Đã chuyển sang chế độ ${isDark ? 'tối' : 'sáng'}`, 'info');
     }
 }
 
-// Notification system
+function initializeSmoothScrolling() {
+    const anchors = document.querySelectorAll('a[href^="#"]');
+    anchors.forEach((anchor) => {
+        anchor.addEventListener('click', function (event) {
+            const href = this.getAttribute('href') || '';
+            if (href === '#' || href.length < 2) {
+                return;
+            }
+
+            const target = document.querySelector(href);
+            if (!target) {
+                return;
+            }
+
+            event.preventDefault();
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        });
+    });
+}
+
+function initializePlaceholderLinks() {
+    let lastNoticeAt = 0;
+
+    document.querySelectorAll('a[href="#"]').forEach((link) => {
+        link.classList.add('link-disabled');
+        link.setAttribute('aria-disabled', 'true');
+
+        link.addEventListener('click', (event) => {
+            event.preventDefault();
+            const now = Date.now();
+            if (now - lastNoticeAt > 1500) {
+                showNotification('Mục này đang được cập nhật.', 'info');
+                lastNoticeAt = now;
+            }
+        });
+    });
+}
+
+function initializeBackToTop() {
+    if (document.getElementById('back-to-top')) {
+        return;
+    }
+
+    const button = document.createElement('button');
+    button.id = 'back-to-top';
+    button.type = 'button';
+    button.className = 'back-to-top';
+    button.setAttribute('aria-label', 'Quay lên đầu trang');
+    button.innerHTML = '<i class="fas fa-arrow-up"></i>';
+
+    button.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    document.body.appendChild(button);
+
+    window.addEventListener('scroll', throttle(() => {
+        button.classList.toggle('is-visible', window.scrollY > 500);
+    }, 120), { passive: true });
+}
+
+function initializeCounters() {
+    const counters = document.querySelectorAll('.counter[data-target]');
+    if (counters.length === 0) {
+        return;
+    }
+
+    const animate = (counter) => {
+        const target = Number(counter.getAttribute('data-target') || 0);
+        if (!target || Number.isNaN(target)) {
+            return;
+        }
+
+        let start = 0;
+        const duration = 1200;
+        const startedAt = performance.now();
+
+        const tick = (now) => {
+            const progress = Math.min((now - startedAt) / duration, 1);
+            start = Math.floor(progress * target);
+            counter.textContent = start.toLocaleString();
+
+            if (progress < 1) {
+                requestAnimationFrame(tick);
+            } else {
+                counter.textContent = target.toLocaleString();
+            }
+        };
+
+        requestAnimationFrame(tick);
+    };
+
+    const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                animate(entry.target);
+                obs.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.35 });
+
+    counters.forEach((counter) => observer.observe(counter));
+}
+
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
-    notification.className = `fixed top-20 right-4 z-50 px-6 py-3 rounded-lg text-white transition-all duration-300 transform translate-x-full shadow-lg`;
+    notification.className = 'fixed top-20 right-4 z-50 px-5 py-3 rounded-lg text-white shadow-lg transition-all duration-300 transform translate-x-full';
+    notification.setAttribute('role', 'status');
+    notification.setAttribute('aria-live', 'polite');
 
-    // Set color based on type
     switch (type) {
         case 'success':
             notification.classList.add('bg-green-500');
@@ -396,98 +575,18 @@ function showNotification(message, type = 'info') {
     notification.textContent = message;
     document.body.appendChild(notification);
 
-    // Animate in
     requestAnimationFrame(() => {
         notification.classList.remove('translate-x-full');
     });
 
-    // Remove after 3 seconds
     setTimeout(() => {
         notification.classList.add('translate-x-full');
         setTimeout(() => {
-            if (notification.parentNode) {
-                document.body.removeChild(notification);
-            }
-        }, 300);
-    }, 3000);
+            notification.remove();
+        }, 260);
+    }, 2600);
 }
 
-// Smooth scrolling for anchor links
-function initializeSmoothScrolling() {
-    const anchors = document.querySelectorAll('a[href^="#"]');
-    anchors.forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            const href = this.getAttribute('href');
-            if (href === '#') return;
-
-            e.preventDefault();
-            const target = document.querySelector(href);
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
-    });
-}
-
-// Window resize handler
-function throttle(func, limit) {
-    let inThrottle;
-    return function () {
-        const args = arguments;
-        const context = this;
-        if (!inThrottle) {
-            func.apply(context, args);
-            inThrottle = true;
-            setTimeout(() => inThrottle = false, limit);
-        }
-    };
-}
-
-window.addEventListener('resize', throttle(() => {
-    // Handle responsive changes
-    if (window.innerWidth > 1024) {
-        // Desktop view
-        const nav = document.querySelector('header nav');
-        if (nav) {
-            nav.classList.remove('hidden');
-            nav.classList.add('flex');
-        }
-
-        // Ensure mobile menu button is reset if needed
-        const mobileMenuBtn = document.getElementById('mobile-menu-button');
-        if (mobileMenuBtn) {
-            mobileMenuBtn.innerHTML = '<i class="fas fa-bars text-xl"></i>';
-            mobileMenuBtn.setAttribute('aria-expanded', 'false');
-        }
-
-        const mobileMenu = document.getElementById('mobile-menu');
-        if (mobileMenu) {
-            mobileMenu.classList.add('hidden');
-        }
-        document.body.style.overflow = '';
-    }
-}, 250));
-
-// Initialize theme on load
-loadTheme();
-
-// Service Worker registration (for PWA functionality)
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-            .then(registration => {
-                console.log('SW registered: ', registration);
-            })
-            .catch(registrationError => {
-                console.log('SW registration failed: ', registrationError);
-            });
-    });
-}
-
-// Advanced Filters functionality
 function initializeAdvancedFilters() {
     const filterSidebar = document.getElementById('filter-sidebar');
     const mobileFilterToggle = document.getElementById('mobile-filter-toggle');
@@ -497,97 +596,151 @@ function initializeAdvancedFilters() {
     const storyGrid = document.getElementById('story-grid');
     const storyCount = document.getElementById('story-count');
 
-    // Only proceed if elements exist (we are on story-list.html)
-    if (!filterSidebar || !storyGrid) return;
+    if (!filterSidebar || !storyGrid) {
+        return;
+    }
 
-    // Mobile Sidebar Toggle
-    if (mobileFilterToggle) {
-        mobileFilterToggle.addEventListener('click', () => {
-            filterSidebar.classList.remove('hidden');
-            filterSidebar.classList.add('fixed', 'inset-0', 'z-50', 'bg-gray-800', 'bg-opacity-50', 'flex', 'items-center', 'justify-center', 'p-4');
-            filterSidebar.querySelector('div').classList.add('w-full', 'max-w-md', 'max-h-[90vh]', 'overflow-y-auto');
+    const overlayClasses = ['fixed', 'inset-0', 'z-50', 'bg-gray-800', 'bg-opacity-50', 'flex', 'items-center', 'justify-center', 'p-4'];
+
+    const openFilterSidebar = () => {
+        filterSidebar.classList.remove('hidden');
+        filterSidebar.classList.add(...overlayClasses);
+
+        const panel = filterSidebar.querySelector('div');
+        if (panel) {
+            panel.classList.add('w-full', 'max-w-md', 'max-h-[90vh]', 'overflow-y-auto');
+        }
+    };
+
+    const closeSidebar = () => {
+        filterSidebar.classList.add('hidden');
+        filterSidebar.classList.remove(...overlayClasses);
+
+        const panel = filterSidebar.querySelector('div');
+        if (panel) {
+            panel.classList.remove('w-full', 'max-w-md', 'max-h-[90vh]', 'overflow-y-auto');
+        }
+    };
+
+    const filterStories = () => {
+        const statusInput = document.querySelector('input[name="status"]:checked');
+        const status = statusInput ? statusInput.value : 'all';
+        const minChapter = parseInt(document.getElementById('min-chapter')?.value || '0', 10) || 0;
+        const maxChapterRaw = parseInt(document.getElementById('max-chapter')?.value || '', 10);
+        const maxChapter = Number.isNaN(maxChapterRaw) ? Infinity : maxChapterRaw;
+
+        const selectedGenres = Array.from(document.querySelectorAll('.genre-checkbox:checked')).map((checkbox) => checkbox.value);
+
+        let visibleCount = 0;
+        const cards = storyGrid.querySelectorAll('.story-card');
+
+        cards.forEach((card) => {
+            const cardStatus = card.dataset.status;
+            const cardChapters = parseInt(card.dataset.chapters || '0', 10);
+            const cardGenres = (card.dataset.genres || '').split(',').map((genre) => genre.trim()).filter(Boolean);
+
+            const statusMatch = status === 'all' || status === cardStatus;
+            const chapterMatch = cardChapters >= minChapter && cardChapters <= maxChapter;
+            const genreMatch = selectedGenres.length === 0 || selectedGenres.every((genre) => cardGenres.includes(genre));
+
+            const isVisible = statusMatch && chapterMatch && genreMatch;
+            card.classList.toggle('hidden', !isVisible);
+
+            if (isVisible) {
+                visibleCount += 1;
+            }
         });
+
+        if (storyCount) {
+            storyCount.textContent = String(visibleCount);
+        }
+
+        if (window.innerWidth < 1024) {
+            closeSidebar();
+        }
+    };
+
+    if (mobileFilterToggle) {
+        mobileFilterToggle.addEventListener('click', openFilterSidebar);
     }
 
     if (closeFilterSidebar) {
-        closeFilterSidebar.addEventListener('click', () => {
-            filterSidebar.classList.add('hidden');
-            filterSidebar.classList.remove('fixed', 'inset-0', 'z-50', 'bg-gray-800', 'bg-opacity-50', 'flex', 'items-center', 'justify-center', 'p-4');
-            filterSidebar.querySelector('div').classList.remove('w-full', 'max-w-md', 'max-h-[90vh]', 'overflow-y-auto');
-        });
+        closeFilterSidebar.addEventListener('click', closeSidebar);
     }
 
-    // Filter Logic
-    function filterStories() {
-        const status = document.querySelector('input[name="status"]:checked').value;
-        const minChapter = parseInt(document.getElementById('min-chapter').value) || 0;
-        const maxChapter = parseInt(document.getElementById('max-chapter').value) || Infinity;
-
-        const selectedGenres = Array.from(document.querySelectorAll('.genre-checkbox:checked')).map(cb => cb.value);
-
-        const cards = storyGrid.querySelectorAll('.story-card');
-        let visibleCount = 0;
-
-        cards.forEach(card => {
-            const cardStatus = card.dataset.status;
-            const cardChapters = parseInt(card.dataset.chapters);
-            const cardGenres = card.dataset.genres.split(',');
-
-            let isVisible = true;
-
-            // Status Filter
-            if (status !== 'all' && status !== cardStatus) {
-                isVisible = false;
-            }
-
-            // Chapter Filter
-            if (cardChapters < minChapter || cardChapters > maxChapter) {
-                isVisible = false;
-            }
-
-            // Genre Filter (AND logic - must match all selected)
-            if (selectedGenres.length > 0) {
-                const hasAllGenres = selectedGenres.every(genre => cardGenres.includes(genre));
-                if (!hasAllGenres) {
-                    isVisible = false;
-                }
-            }
-
-            if (isVisible) {
-                card.classList.remove('hidden');
-                visibleCount++;
-            } else {
-                card.classList.add('hidden');
-            }
-        });
-
-        // Update Count
-        if (storyCount) {
-            storyCount.textContent = visibleCount;
-        }
-
-        // Close sidebar on mobile after applying
-        if (window.innerWidth < 1024) {
-            if (closeFilterSidebar) closeFilterSidebar.click();
-        }
-    }
-
-    // Apply Button
     if (applyFiltersBtn) {
         applyFiltersBtn.addEventListener('click', filterStories);
     }
 
-    // Reset Button
     if (resetFiltersBtn) {
         resetFiltersBtn.addEventListener('click', () => {
-            // Reset inputs
-            document.querySelector('input[name="status"][value="all"]').checked = true;
-            document.getElementById('min-chapter').value = '';
-            document.getElementById('max-chapter').value = '';
-            document.querySelectorAll('.genre-checkbox').forEach(cb => cb.checked = false);
+            const allStatus = document.querySelector('input[name="status"][value="all"]');
+            if (allStatus) {
+                allStatus.checked = true;
+            }
 
-            // Re-filter (show all)
+            const minChapterInput = document.getElementById('min-chapter');
+            const maxChapterInput = document.getElementById('max-chapter');
+            if (minChapterInput) {
+                minChapterInput.value = '';
+            }
+            if (maxChapterInput) {
+                maxChapterInput.value = '';
+            }
+
+            document.querySelectorAll('.genre-checkbox').forEach((checkbox) => {
+                checkbox.checked = false;
+            });
+
             filterStories();
         });
     }
+}
+
+function registerServiceWorker() {
+    if (!('serviceWorker' in navigator) || window.__tsSwRegistered) {
+        return;
+    }
+
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+                window.__tsSwRegistered = true;
+                console.log('SW registered:', registration.scope);
+            })
+            .catch((error) => {
+                console.log('SW registration failed:', error);
+            });
+    });
+}
+
+function getStoryIdFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('id') || 'story';
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+}
+
+function throttle(callback, limit) {
+    let inThrottle = false;
+
+    return function throttled(...args) {
+        if (inThrottle) {
+            return;
+        }
+
+        callback.apply(this, args);
+        inThrottle = true;
+
+        setTimeout(() => {
+            inThrottle = false;
+        }, limit);
+    };
 }
